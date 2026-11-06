@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Details | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .details-layout {
+      max-width: var(--container-max);
+      margin: var(--space-8) auto var(--space-12);
+      padding: 0 var(--space-6);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+    .event-hero-banner {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-6);
+      border: var(--border-glass);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .glass-card-box {
+      background: var(--bg-surface);
+      border: var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      backdrop-filter: var(--blur-md);
+      -webkit-backdrop-filter: var(--blur-md);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+      margin-bottom: var(--space-6);
+    }
+    .sidebar-glass-box {
+      background: var(--bg-surface);
+      border: var(--border-glass-strong);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      backdrop-filter: var(--blur-lg);
+      -webkit-backdrop-filter: var(--blur-lg);
+      position: sticky;
+      top: 100px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+    }
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-3) 0;
+      border-bottom: var(--border-glass-subtle);
+      font-size: 0.875rem;
+    }
+    .info-label {
+      color: var(--ink-secondary);
+      font-weight: 500;
+    }
+    .info-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .capacity-bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-top: var(--space-2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .capacity-progress {
+      height: 100%;
+      background: var(--accent-gradient);
+      transition: width 0.4s ease;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+    }
+    @media (max-width: 850px) {
+      .details-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge">Event View</span>
+        </a>
+
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html">Home</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html" class="active">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/about.html">About</a></li>
+          <li class="glass-tab-item"><a href="/pages/contact.html">Contact</a></li>
+        </ul>
+
+        <div class="navbar-actions" id="navbar-auth-actions"></div>
+      </div>
+    </nav>
+  </div>
+
+  <main class="details-layout" id="event-details-content">
+    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--ink-secondary);">
+      Loading event details from database...
+    </div>
+  </main>
+
+  <footer>
+    <div style="max-width: var(--container-max); margin: 0 auto; text-align: center;">
+      <strong style="color:#ffffff;">College Event Management System</strong> • Premium Glass Tab UI
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('id');
+
+    async function loadEventDetails() {
+      const container = document.getElementById('event-details-content');
+      if (!eventId) {
+        container.innerHTML = '<div style="grid-column:1 / -1; padding:3rem; text-align:center; color:var(--ink-secondary);">No event specified. <a href="/pages/events.html">Back to Events</a></div>';
+        return;
+      }
+
+      try {
+        const res = await Api.events.getById(eventId);
+        const ev = res.data;
+        const user = Api.getUser();
+        const percent = Math.min(100, Math.round((ev.currentRegistrations / ev.maxCapacity) * 100));
+
+        let regBtn = '';
+        if (!user) {
+          regBtn = `
+            <a href="/pages/login.html?redirect=${encodeURIComponent(window.location.href)}" class="btn btn-primary btn-block btn-pill">
+              Login as Student to Register
+            </a>
+          `;
+        } else if (user.role === 'ROLE_ADMIN') {
+          regBtn = `
+            <a href="/pages/admin-events.html" class="btn btn-secondary btn-block btn-pill">
+              Manage Event in Admin Panel
+            </a>
+          `;
+        } else if (ev.full) {
+          regBtn = `<button class="btn btn-secondary btn-block btn-pill" disabled>Capacity Full</button>`;
+        } else if (!ev.registrationOpen) {
+          regBtn = `<button class="btn btn-secondary btn-block btn-pill" disabled>Registration Closed</button>`;
+        } else {
+          regBtn = `
+            <button id="registerBtn" onclick="handleEventRegistration(${ev.id})" class="btn btn-primary btn-block btn-pill">
+              Register for this Event Now
+            </button>
+          `;
+        }
+
+        container.innerHTML = `
+          <div>
+            <img src="${ev.imageUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80'}" alt="${ev.title}" class="event-hero-banner" />
+            
+            <div style="display: flex; gap: var(--space-3); margin-bottom: var(--space-3); align-items: center;">
+              <span class="badge badge-active">${ev.category}</span>
+              <span class="badge badge-${ev.status.toLowerCase()}">${ev.status}</span>
+            </div>
+
+            <h1 style="font-size: 2.3rem; margin-bottom: var(--space-4); color:#ffffff;">${ev.title}</h1>
+
+            <div class="glass-card-box">
+              <h3 style="margin-bottom: var(--space-3); color:#ffffff;">About this Event</h3>
+              <p style="white-space: pre-line; line-height: 1.7; color: var(--ink-secondary); font-size: 1rem;">
+                ${ev.description}
+              </p>
+            </div>
+
+            <div class="glass-card-box">
+              <h3 style="margin-bottom: var(--space-3); color:#ffffff;">Event Schedule & Venue</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                <div>
+                  <strong style="color:#ffffff;">Location:</strong>
+                  <p style="margin-top:0.25rem;">${ev.venue}</p>
+                </div>
+                <div>
+                  <strong style="color:#ffffff;">Date & Time:</strong>
+                  <p style="margin-top:0.25rem;">${ev.eventDate} at ${ev.eventTime}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside>
+            <div class="sidebar-glass-box">
+              <h3 style="font-size: 1.25rem; margin-bottom: var(--space-4); color:#ffffff;">Registration Details</h3>
+              
+              <div class="info-item">
+                <span class="info-label">Event Date:</span>
+                <span class="info-val">${ev.eventDate}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Event Time:</span>
+                <span class="info-val">${ev.eventTime}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Venue:</span>
+                <span class="info-val">${ev.venue}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Deadline:</span>
+                <span class="info-val">${new Date(ev.registrationDeadline).toLocaleDateString()}</span>
+              </div>
+              
+              <div style="margin: var(--space-4) 0;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; color:var(--ink-secondary);">
+                  <span>Capacity Utilization</span>
+                  <span style="color:#38bdf8;">${ev.currentRegistrations} / ${ev.maxCapacity} Seats</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-progress" style="width: ${percent}%;"></div>
+                </div>
+              </div>
+
+              <div id="regActionContainer" style="margin-top: var(--space-6);">
+                ${regBtn}
+              </div>
+
+              <div style="margin-top: var(--space-4); text-align: center; font-size: 0.75rem; color: var(--ink-muted);">
+                Direct MySQL Persistence • Real-time Admin Telemetry
+              </div>
+            </div>
+          </aside>
+        `;
+      } catch (err) {
+        container.innerHTML = `<div style="grid-column:1 / -1; color:#f87171; padding:3rem; text-align:center;">Failed to load event: ${err.message}</div>`;
+      }
+    }
+
+    async function handleEventRegistration(id) {
+      const btn = document.getElementById('registerBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Submitting Registration to MySQL...';
+      }
+
+      try {
+        const res = await Api.registrations.register(id);
+        const reg = res.data;
+        Toast.success(`Successfully registered! Code: ${reg.registrationCode}`);
+
+        document.getElementById('regActionContainer').innerHTML = `
+          <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius-md); padding: var(--space-4); text-align:center; backdrop-filter:var(--blur-sm);">
+            <div style="font-weight:700; color: #34d399; margin-bottom: 0.25rem;">Registration Submitted!</div>
+            <div style="font-size:0.85rem; color: #ffffff; margin-bottom: 0.75rem;">Code: <code>${reg.registrationCode}</code></div>
+            <a href="/pages/my-registrations.html" class="btn btn-primary btn-sm btn-block btn-pill">View My Registrations →</a>
+          </div>
+        `;
+      } catch (err) {
+        Toast.error(err.message || 'Registration failed');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Register for this Event Now';
+        }
+      }
+    }
+
+    loadEventDetails();
+  </script>
+</body>
+</html>

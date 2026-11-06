@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .auth-wrapper {
+      max-width: 560px;
+      margin: var(--space-8) auto var(--space-12);
+      padding: 0 var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--ink-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 4px;
+    }
+    .password-toggle-btn:hover {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge">Registration</span>
+        </a>
+
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html">Home</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/login.html">Login</a></li>
+          <li class="glass-tab-item"><a href="/pages/register.html" class="active">Student Sign Up</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <a href="/pages/login.html" class="btn btn-secondary btn-sm btn-pill">Sign In</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <main class="auth-wrapper">
+    <div class="card" style="border: var(--border-glass-strong); padding: var(--space-4);">
+      <div class="card-header" style="border-bottom: var(--border-glass-subtle); padding: var(--space-4) var(--space-6);">
+        <div>
+          <h2 style="font-size: 1.4rem; color:#ffffff;">Student Account Registration</h2>
+          <p style="font-size: 0.85rem; color: var(--ink-secondary);">Create your verified campus credentials to register for events.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form id="studentRegisterForm" onsubmit="handleStudentRegister(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label">College Student ID *</label>
+              <input type="text" id="regStudentId" class="form-control" placeholder="e.g. STU-2026-102" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="regFullName" class="form-control" placeholder="First & Last Name" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">College Email Address *</label>
+            <input type="email" id="regEmail" class="form-control" placeholder="student@college.edu" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label">Account Password *</label>
+              <div class="password-wrapper">
+                <input type="password" id="regPassword" class="form-control" minlength="6" placeholder="Min 6 characters" required />
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('regPassword', this)">Show</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Phone *</label>
+              <input type="tel" id="regPhone" class="form-control" placeholder="+91 9876543210" required />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label">Academic Department *</label>
+              <select id="regDepartment" class="form-select" required>
+                <option value="">Select Department</option>
+                <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Electronics & Communication">Electronics & Communication</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Business Administration">Business Administration</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year of Study *</label>
+              <select id="regYear" class="form-select" required>
+                <option value="">Select Year</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+                <option value="Post-Graduate">Post-Graduate</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--space-6);">
+            <button type="submit" id="regSubmitBtn" class="btn btn-primary btn-block btn-pill">
+              Create Student Account
+            </button>
+          </div>
+        </form>
+
+        <div style="margin-top: var(--space-4); text-align: center; font-size: 0.85rem; color: var(--ink-secondary);">
+          Already have an account? <a href="/pages/login.html" style="font-weight:600;">Sign in here</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    async function handleStudentRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('regSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving account to MySQL database...';
+
+      const data = {
+        studentId: document.getElementById('regStudentId').value.trim(),
+        fullName: document.getElementById('regFullName').value.trim(),
+        email: document.getElementById('regEmail').value.trim(),
+        password: document.getElementById('regPassword').value,
+        phone: document.getElementById('regPhone').value.trim(),
+        department: document.getElementById('regDepartment').value,
+        yearOfStudy: document.getElementById('regYear').value
+      };
+
+      try {
+        const res = await Api.auth.studentRegister(data);
+        Api.setAuth(res.data);
+        Toast.success('Account created successfully in MySQL! Redirecting to student dashboard...');
+        setTimeout(() => {
+          window.location.href = '/pages/student-dashboard.html';
+        }, 600);
+      } catch (err) {
+        Toast.error(err.message || 'Registration failed');
+        btn.disabled = false;
+        btn.textContent = 'Create Student Account';
+      }
+    }
+  </script>
+</body>
+</html>

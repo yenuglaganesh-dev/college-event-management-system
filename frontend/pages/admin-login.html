@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Login | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .auth-wrapper {
+      max-width: 450px;
+      margin: var(--space-12) auto;
+      padding: 0 var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--ink-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 4px;
+    }
+    .password-toggle-btn:hover {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border-color:rgba(239, 68, 68, 0.4);">Admin Portal</span>
+        </a>
+
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html">Public Site</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/login.html">Student Login</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-login.html" class="active">Admin Portal</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <a href="/pages/login.html" class="btn btn-secondary btn-sm btn-pill">Student Portal</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <main class="auth-wrapper">
+    <div class="card" style="border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 15px 40px rgba(124, 58, 237, 0.15);">
+      <div class="card-header" style="border-bottom: var(--border-glass-subtle); padding: var(--space-6);">
+        <div>
+          <h2 style="font-size: 1.4rem; color:#ffffff;">Event Administrator Login</h2>
+          <p style="font-size: 0.85rem; color: var(--ink-secondary);">Faculty and event committee authorized access.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Administrator Username or Email</label>
+            <input type="text" id="adminUsername" class="form-control" placeholder="admin" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="adminPassword" class="form-control" placeholder="Admin@123" required />
+              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('adminPassword', this)">Show</button>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--space-6);">
+            <button type="submit" id="adminSubmitBtn" class="btn btn-primary btn-block btn-pill">
+              Authenticate Admin Session
+            </button>
+          </div>
+        </form>
+
+        <div style="margin-top: var(--space-6); padding: var(--space-4); background: rgba(255, 255, 255, 0.03); border: var(--border-glass-subtle); border-radius: var(--radius-md); font-size: 0.8rem; color: var(--ink-secondary); text-align: center;">
+          Default Credentials: <code style="color:#ffffff;">admin</code> / <code style="color:#ffffff;">Admin@123</code>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('adminSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Verifying administrator access...';
+
+      const username = document.getElementById('adminUsername').value.trim();
+      const password = document.getElementById('adminPassword').value;
+
+      try {
+        const res = await Api.auth.adminLogin({ username, password });
+        Api.setAuth(res.data);
+        Toast.success('Admin authenticated! Redirecting to telemetry console...');
+        setTimeout(() => {
+          window.location.href = '/pages/admin-dashboard.html';
+        }, 500);
+      } catch (err) {
+        Toast.error(err.message || 'Admin authentication failed');
+        btn.disabled = false;
+        btn.textContent = 'Authenticate Admin Session';
+      }
+    }
+  </script>
+</body>
+</html>

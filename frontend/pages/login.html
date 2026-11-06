@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .auth-wrapper {
+      max-width: 450px;
+      margin: var(--space-12) auto;
+      padding: 0 var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--ink-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 4px;
+    }
+    .password-toggle-btn:hover {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge">Student Portal</span>
+        </a>
+
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html">Home</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/login.html" class="active">Student Login</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-login.html">Admin Portal</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <a href="/pages/register.html" class="btn btn-secondary btn-sm btn-pill">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <main class="auth-wrapper">
+    <div class="card" style="border: var(--border-glass-strong); padding: var(--space-4);">
+      <div class="card-header" style="border-bottom: var(--border-glass-subtle); padding-bottom: var(--space-4);">
+        <div>
+          <h2 style="font-size: 1.4rem; color:#ffffff;">Student Login</h2>
+          <p style="font-size: 0.85rem; color: var(--ink-secondary);">Access your registered events and real-time status.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form id="studentLoginForm" onsubmit="handleStudentLogin(event)">
+          <div class="form-group">
+            <label class="form-label">College Student ID or Email</label>
+            <input type="text" id="loginIdentifier" class="form-control" placeholder="e.g. STU-2026-001 or email" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required />
+              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('loginPassword', this)">Show</button>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--space-6);">
+            <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-block btn-pill">
+              Log In to Portal
+            </button>
+          </div>
+        </form>
+
+        <div style="margin-top: var(--space-4); text-align: center; font-size: 0.85rem; color: var(--ink-secondary);">
+          Don't have an account yet? <a href="/pages/register.html" style="font-weight:600;">Create an account</a>
+        </div>
+
+        <div style="margin-top: var(--space-4); padding: var(--space-4); background: rgba(255, 255, 255, 0.03); border: var(--border-glass-subtle); border-radius: var(--radius-md); text-align: center; font-size: 0.8rem; color: var(--ink-secondary);">
+          Demo Account: <strong style="color:#ffffff;">STU-2026-001</strong> / <strong style="color:#ffffff;">Student@123</strong>
+          <br>
+          <a href="/pages/admin-login.html" style="display:inline-block; margin-top: 0.5rem; color:#38bdf8;">Administrator Portal →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    async function handleStudentLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Verifying credentials...';
+
+      const username = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const res = await Api.auth.studentLogin({ username, password });
+        Api.setAuth(res.data);
+        Toast.success('Login verified! Connecting to student dashboard...');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect') || '/pages/student-dashboard.html';
+
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 500);
+      } catch (err) {
+        Toast.error(err.message || 'Login failed. Check your student ID / password.');
+        btn.disabled = false;
+        btn.textContent = 'Log In to Portal';
+      }
+    }
+  </script>
+</body>
+</html>

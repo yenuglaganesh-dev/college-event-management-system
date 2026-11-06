@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Registrations Management | Admin Portal</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .filter-section {
+      background: var(--bg-surface);
+      border: var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4) var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: var(--blur-md);
+      -webkit-backdrop-filter: var(--blur-md);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    }
+    .filter-controls {
+      display: flex;
+      gap: var(--space-3);
+      flex: 1;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border-color:rgba(239, 68, 68, 0.4);">Admin Console</span>
+        </a>
+
+        <!-- Admin Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/pages/admin-dashboard.html">Dashboard</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-events.html">Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-students.html">Students</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-registrations.html" class="active">Registrations</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-reports.html">Reports</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button onclick="handleLogout()" class="btn btn-secondary btn-sm btn-pill" style="color:#f87171;">Sign Out Admin</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="dashboard-layout">
+    <!-- Admin Glass Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-user-name" id="admin-display-name">Administrator</div>
+        <div class="sidebar-user-role">System Admin • MySQL Connected</div>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="/pages/admin-dashboard.html">Dashboard Overview</a></li>
+        <li><a href="/pages/admin-registrations.html" class="active">Registration Management</a></li>
+        <li><a href="/pages/admin-events.html">Event Management</a></li>
+        <li><a href="/pages/admin-students.html">Student Directory</a></li>
+        <li><a href="/pages/admin-reports.html">Reports & Statistics</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="color:#ffffff;">EVENT REGISTRATIONS MANAGEMENT</h1>
+          <p>Review, verify, approve, or reject student event registrations stored in MySQL database.</p>
+        </div>
+        <div style="display: flex; gap: var(--space-3);">
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="exportToCsv()">Export to CSV</button>
+          <button class="btn btn-primary btn-sm btn-pill" onclick="loadRegistrations()">Refresh Now</button>
+        </div>
+      </div>
+
+      <!-- Glass Filters & Search -->
+      <div class="filter-section">
+        <div class="filter-controls">
+          <input type="text" id="adminSearchInput" class="form-control" style="max-width: 280px;" placeholder="Search Student ID, Name, Code..." />
+          <select id="eventFilterSelect" class="form-select" style="max-width: 220px;">
+            <option value="">All Events</option>
+          </select>
+          <select id="statusFilterSelect" class="form-select" style="max-width: 160px;">
+            <option value="">All Statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="applyFilters()">Filter</button>
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="resetFilters()">Clear</button>
+        </div>
+        <div style="font-size: 0.8rem; color: #38bdf8; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></span>
+          Auto-sync active (8s)
+        </div>
+      </div>
+
+      <!-- Glass Registrations Table -->
+      <div class="card">
+        <div class="card-body" style="padding: 0;">
+          <div class="table-responsive">
+            <table class="table" id="admin-registrations-table">
+              <thead>
+                <tr>
+                  <th>Registration ID</th>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Event Name</th>
+                  <th>Event Date</th>
+                  <th>Registration Date</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="registrations-tbody">
+                <tr><td colspan="10" style="text-align:center; padding: 3rem; color: var(--ink-secondary);">Loading registration records from MySQL...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Registration Details Glass Modal -->
+  <div class="modal-overlay" id="regDetailsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle" style="color:#ffffff;">Registration Details</h3>
+        <button onclick="closeModal()" style="border:none; background:none; font-size:1.4rem; line-height:1; color:var(--ink-secondary); cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        Loading details...
+      </div>
+      <div class="modal-footer" id="modalFooter">
+        <button class="btn btn-secondary btn-pill" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    const user = Api.getUser();
+    if (!user || user.role !== 'ROLE_ADMIN') {
+      window.location.href = '/pages/admin-login.html';
+    } else {
+      document.getElementById('admin-display-name').textContent = user.fullName || user.username;
+    }
+
+    let allRegistrations = [];
+
+    // Load available events for dropdown filter
+    async function loadEventsDropdown() {
+      try {
+        const res = await Api.events.getAll();
+        const events = res.data || [];
+        const select = document.getElementById('eventFilterSelect');
+        events.forEach(e => {
+          const opt = document.createElement('option');
+          opt.value = e.id;
+          opt.textContent = e.title;
+          select.appendChild(opt);
+        });
+      } catch (e) {
+        console.warn('Could not populate event filter dropdown', e);
+      }
+    }
+
+    async function loadRegistrations() {
+      const search = document.getElementById('adminSearchInput').value.trim();
+      const eventId = document.getElementById('eventFilterSelect').value;
+      const status = document.getElementById('statusFilterSelect').value;
+      const tbody = document.getElementById('registrations-tbody');
+
+      try {
+        const res = await Api.registrations.filter(eventId || null, status || null, search || null);
+        allRegistrations = res.data || [];
+
+        if (allRegistrations.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="10" style="text-align:center; padding:3rem; color: var(--ink-secondary);">
+                No registration records found in MySQL.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = allRegistrations.map(r => `
+          <tr>
+            <td><code>${r.registrationCode}</code></td>
+            <td><strong>${r.studentId}</strong></td>
+            <td>${r.studentName}</td>
+            <td><a href="mailto:${r.studentEmail}" style="font-size:0.85rem; color:#60a5fa;">${r.studentEmail}</a></td>
+            <td>${r.studentPhone}</td>
+            <td><strong style="color:#ffffff;">${r.eventTitle}</strong></td>
+            <td>${r.eventDate}</td>
+            <td>${r.registrationDateFormatted} ${r.registrationTimeFormatted}</td>
+            <td>
+              <span class="badge badge-${r.status.toLowerCase()}">${r.status}</span>
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button onclick="viewDetails(${r.id})" class="btn btn-secondary btn-sm btn-pill" title="View Student & Event Details">View</button>
+              ${r.status !== 'APPROVED' ? `
+                <button onclick="updateStatus(${r.id}, 'APPROVED')" class="btn btn-success btn-sm btn-pill" title="Approve Registration">Approve</button>
+              ` : ''}
+              ${r.status !== 'REJECTED' ? `
+                <button onclick="promptReject(${r.id})" class="btn btn-danger btn-sm btn-pill" title="Reject Registration">Reject</button>
+              ` : ''}
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="10" style="color:#f87171; text-align:center; padding:2rem;">Failed to retrieve registrations: ${err.message}</td></tr>`;
+      }
+    }
+
+    function applyFilters() {
+      loadRegistrations();
+    }
+
+    function resetFilters() {
+      document.getElementById('adminSearchInput').value = '';
+      document.getElementById('eventFilterSelect').value = '';
+      document.getElementById('statusFilterSelect').value = '';
+      loadRegistrations();
+    }
+
+    document.getElementById('adminSearchInput').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') applyFilters();
+    });
+
+    async function updateStatus(id, newStatus, remarks = '') {
+      try {
+        await Api.registrations.updateStatus(id, newStatus, remarks);
+        Toast.success(`Registration status updated to ${newStatus} in MySQL`);
+        loadRegistrations();
+        closeModal();
+      } catch (err) {
+        Toast.error(err.message || 'Status update failed');
+      }
+    }
+
+    function promptReject(id) {
+      const reason = prompt('Please enter rejection remarks (e.g., Ineligible batch, prerequisite not met):', 'Prerequisites not met');
+      if (reason !== null) {
+        updateStatus(id, 'REJECTED', reason);
+      }
+    }
+
+    function viewDetails(id) {
+      const r = allRegistrations.find(item => item.id === id);
+      if (!r) return;
+
+      document.getElementById('modalTitle').textContent = `Registration Details - ${r.registrationCode}`;
+      document.getElementById('modalBody').innerHTML = `
+        <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+          <div style="background:rgba(255,255,255,0.03); border:var(--border-glass-subtle); padding:var(--space-4); border-radius:var(--radius-md);">
+            <h4 style="font-size:0.95rem; margin-bottom:0.4rem; color:#ffffff;">Student Academic Profile</h4>
+            <div style="font-size:0.85rem; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; color:var(--ink-secondary);">
+              <div><strong style="color:#ffffff;">Name:</strong> ${r.studentName}</div>
+              <div><strong style="color:#ffffff;">College ID:</strong> ${r.studentId}</div>
+              <div><strong style="color:#ffffff;">Email:</strong> ${r.studentEmail}</div>
+              <div><strong style="color:#ffffff;">Phone:</strong> ${r.studentPhone}</div>
+              <div><strong style="color:#ffffff;">Department:</strong> ${r.studentDepartment || 'N/A'}</div>
+              <div><strong style="color:#ffffff;">Year:</strong> ${r.studentYear || 'N/A'}</div>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03); border:var(--border-glass-subtle); padding:var(--space-4); border-radius:var(--radius-md);">
+            <h4 style="font-size:0.95rem; margin-bottom:0.4rem; color:#ffffff;">Event Information</h4>
+            <div style="font-size:0.85rem; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; color:var(--ink-secondary);">
+              <div><strong style="color:#ffffff;">Event:</strong> ${r.eventTitle}</div>
+              <div><strong style="color:#ffffff;">Category:</strong> ${r.eventCategory}</div>
+              <div><strong style="color:#ffffff;">Date & Time:</strong> ${r.eventDate} at ${r.eventTime}</div>
+              <div><strong style="color:#ffffff;">Venue:</strong> ${r.eventVenue}</div>
+            </div>
+          </div>
+
+          <div style="color:var(--ink-secondary);">
+            <div style="font-size:0.85rem;"><strong style="color:#ffffff;">Registration Timestamp:</strong> ${r.registrationDateFormatted} ${r.registrationTimeFormatted}</div>
+            <div style="font-size:0.85rem; margin-top:0.4rem;"><strong style="color:#ffffff;">Current Status:</strong> <span class="badge badge-${r.status.toLowerCase()}">${r.status}</span></div>
+            <div style="font-size:0.85rem; margin-top:0.4rem;"><strong style="color:#ffffff;">Admin Remarks:</strong> ${r.adminRemarks || 'None'}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-secondary btn-pill" onclick="closeModal()">Close</button>
+        <button class="btn btn-danger btn-sm btn-pill" onclick="promptReject(${r.id})">Reject</button>
+        <button class="btn btn-success btn-sm btn-pill" onclick="updateStatus(${r.id}, 'APPROVED')">Approve Registration</button>
+      `;
+
+      document.getElementById('regDetailsModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('regDetailsModal').classList.remove('active');
+    }
+
+    function exportToCsv() {
+      if (allRegistrations.length === 0) {
+        Toast.error('No registrations available to export');
+        return;
+      }
+
+      const headers = ['Registration Code', 'Student ID', 'Student Name', 'Email', 'Phone', 'Department', 'Event Title', 'Event Date', 'Registered At', 'Status', 'Remarks'];
+      const rows = allRegistrations.map(r => [
+        `"${r.registrationCode}"`,
+        `"${r.studentId}"`,
+        `"${r.studentName}"`,
+        `"${r.studentEmail}"`,
+        `"${r.studentPhone}"`,
+        `"${r.studentDepartment || ''}"`,
+        `"${r.eventTitle}"`,
+        `"${r.eventDate}"`,
+        `"${r.registrationDateFormatted} ${r.registrationTimeFormatted}"`,
+        `"${r.status}"`,
+        `"${r.adminRemarks || ''}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `college_event_registrations_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      Toast.success('Exported registrations to CSV');
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('search')) {
+      document.getElementById('adminSearchInput').value = urlParams.get('search');
+    }
+
+    loadEventsDropdown();
+    loadRegistrations();
+
+    // Periodic auto-sync every 8 seconds
+    setInterval(() => {
+      loadRegistrations();
+    }, 8000);
+  </script>
+</body>
+</html>

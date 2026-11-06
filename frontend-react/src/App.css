@@ -1,0 +1,16 @@
+/* App Layout */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+.section-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .about-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-12) var(--space-6);
+    }
+    .about-hero {
+      text-align: center;
+      margin-bottom: var(--space-12);
+    }
+    .architecture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+      margin-top: var(--space-6);
+    }
+    .arch-card {
+      background: var(--bg-surface);
+      border: var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      backdrop-filter: var(--blur-md);
+      -webkit-backdrop-filter: var(--blur-md);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .arch-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="glass-ambient-1"></div>
+  <div class="glass-ambient-2"></div>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge">Official Portal</span>
+        </a>
+
+        <!-- Public Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html">Home</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/about.html" class="active">About</a></li>
+          <li class="glass-tab-item"><a href="/pages/contact.html">Contact</a></li>
+        </ul>
+
+        <div class="navbar-actions" id="navbar-auth-actions"></div>
+      </div>
+    </nav>
+  </div>
+
+  <main class="about-wrapper">
+    <div class="about-hero">
+      <div class="badge badge-active" style="margin-bottom: var(--space-3); display: inline-block;">Enterprise Institutional Platform</div>
+      <h1 style="font-size: 2.8rem; font-weight: 800; color: #ffffff; letter-spacing: -0.03em; margin-bottom: var(--space-4);">
+        Unified Campus Event Infrastructure
+      </h1>
+      <p style="font-size: 1.15rem; color: var(--ink-secondary); max-width: 680px; margin: 0 auto; line-height: 1.7;">
+        An engineered full-stack platform designed to eliminate friction between student participation, departmental scheduling, and administrative governance.
+      </p>
+    </div>
+
+    <!-- Institutional Mission Card -->
+    <div class="card" style="margin-bottom: var(--space-8); padding: var(--space-8);">
+      <h2 style="font-size: 1.5rem; color: #ffffff; margin-bottom: var(--space-4);">Institutional Purpose</h2>
+      <p style="color: var(--ink-secondary); line-height: 1.8; margin-bottom: var(--space-4);">
+        The College Event Management System (CEMS) was engineered from the ground up to unify all extracurricular, cultural, sports, and technical events into a singular high-integrity ecosystem. By transitioning from paper forms and manual spreadsheets to a normalized relational architecture, CEMS ensures complete transparency, instant auditability, and fair seat allocation.
+      </p>
+      <p style="color: var(--ink-secondary); line-height: 1.8;">
+        Every registration is backed by atomic MySQL transactions and validated through Java Spring Boot business services, ensuring zero overbooking and real-time faculty approval workflows.
+      </p>
+    </div>
+
+    <!-- Architectural Pillars -->
+    <h2 style="font-size: 1.5rem; color: #ffffff; margin-bottom: var(--space-2); text-align: center;">Technical Pillars & Engineering</h2>
+    <p style="text-align: center; color: var(--ink-secondary); margin-bottom: var(--space-6);">Built on enterprise-grade specifications with modern architectural standards.</p>
+
+    <div class="architecture-grid">
+      <div class="arch-card">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Backend Layer</div>
+        <h3 style="font-size: 1.2rem; color: #ffffff; margin-bottom: var(--space-2);">Java 21 & Spring Boot 3</h3>
+        <p style="font-size: 0.9rem; color: var(--ink-secondary); line-height: 1.6;">
+          Utilizing Spring Web REST controllers, Spring Data JPA repositories, and stateless Spring Security filters with cryptographic JWT authentication.
+        </p>
+      </div>
+
+      <div class="arch-card">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Persistence Layer</div>
+        <h3 style="font-size: 1.2rem; color: #ffffff; margin-bottom: var(--space-2);">MySQL 8.4 Relational Store</h3>
+        <p style="font-size: 0.9rem; color: var(--ink-secondary); line-height: 1.6;">
+          Strict foreign key cascades, unique compound constraints preventing duplicate registrations, and ACID transactions for capacity counters.
+        </p>
+      </div>
+
+      <div class="arch-card">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Interface Design</div>
+        <h3 style="font-size: 1.2rem; color: #ffffff; margin-bottom: var(--space-2);">Taste Skill Glassmorphism</h3>
+        <p style="font-size: 0.9rem; color: var(--ink-secondary); line-height: 1.6;">
+          Adheres strictly to Taste Skill guidelines: frosted glass panels, ambient lighting, floating tab navigation, and zero unnecessary visual clutter.
+        </p>
+      </div>
+
+      <div class="arch-card">
+        <div style="font-size: 0.8rem; font-weight: 700; color: #34d399; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Live Synchronization</div>
+        <h3 style="font-size: 1.2rem; color: #ffffff; margin-bottom: var(--space-2);">Real-Time Student-to-Admin Sync</h3>
+        <p style="font-size: 0.9rem; color: var(--ink-secondary); line-height: 1.6;">
+          When a student registers, administrators immediately view the record, review academic credentials, and issue approvals with feedback remarks.
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Call to Action -->
+    <div class="card" style="margin-top: var(--space-10); padding: var(--space-8); text-align: center; border-color: rgba(56, 189, 248, 0.3);">
+      <h3 style="font-size: 1.35rem; color: #ffffff; margin-bottom: var(--space-2);">Ready to Explore Campus Activities?</h3>
+      <p style="color: var(--ink-secondary); margin-bottom: var(--space-6);">Browse upcoming technical workshops, hackathons, and cultural fests.</p>
+      <div style="display: flex; justify-content: center; gap: var(--space-4);">
+        <a href="/pages/events.html" class="btn btn-primary btn-pill">Explore Events Directory</a>
+        <a href="/pages/contact.html" class="btn btn-secondary btn-pill">Contact Event Cell</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div style="max-width: var(--container-max); margin: 0 auto; text-align: center; color: var(--ink-secondary); font-size: 0.9rem;">
+      <strong style="color: #ffffff;">College Event Management System</strong> • Engineered with Java Spring Boot & MySQL
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+</body>
+</html>

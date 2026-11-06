@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Event Cell | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .contact-wrapper {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: var(--space-12) var(--space-6);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: var(--space-8);
+      margin-top: var(--space-8);
+    }
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .info-item {
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .info-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="glass-ambient-1"></div>
+  <div class="glass-ambient-2"></div>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge">Official Portal</span>
+        </a>
+
+        <!-- Public Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html">Home</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/about.html">About</a></li>
+          <li class="glass-tab-item"><a href="/pages/contact.html" class="active">Contact</a></li>
+        </ul>
+
+        <div class="navbar-actions" id="navbar-auth-actions"></div>
+      </div>
+    </nav>
+  </div>
+
+  <main class="contact-wrapper">
+    <div style="text-align: center; margin-bottom: var(--space-8);">
+      <div class="badge badge-active" style="margin-bottom: var(--space-3); display: inline-block;">Support & Inquiries</div>
+      <h1 style="font-size: 2.8rem; font-weight: 800; color: #ffffff; letter-spacing: -0.03em; margin-bottom: var(--space-3);">
+        Campus Event Coordination Cell
+      </h1>
+      <p style="color: var(--ink-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        Have questions regarding event guidelines, team eligibility, administrative verification, or venue bookings?
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Contact Details Frosted Card -->
+      <div class="card" style="padding: var(--space-8);">
+        <h2 style="font-size: 1.4rem; color: #ffffff; margin-bottom: var(--space-4);">Central Office Desk</h2>
+        
+        <div class="info-item">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Campus Location</div>
+          <strong style="color: #ffffff; font-size: 0.95rem;">Student Activity Center (SAC), Room 204</strong>
+          <p style="color: var(--ink-secondary); font-size: 0.85rem; margin-top: 2px;">University Main Campus, Technology Block, Hyd - 500032</p>
+        </div>
+
+        <div class="info-item">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Electronic Mail</div>
+          <p style="margin: 0; font-size: 0.9rem;">
+            General Desk: <a href="mailto:events@college.edu" style="color: var(--accent-primary); text-decoration: none;">events@college.edu</a><br>
+            Administrative Inquiries: <a href="mailto:admin@college.edu" style="color: var(--accent-primary); text-decoration: none;">admin@college.edu</a>
+          </p>
+        </div>
+
+        <div class="info-item">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Direct Helplines</div>
+          <p style="margin: 0; font-size: 0.9rem; color: var(--ink-secondary);">
+            Event Coordinator: <strong style="color: #ffffff;">+91 (040) 2345-6789</strong><br>
+            Student Technical Desk: <strong style="color: #ffffff;">+91 (040) 2345-6790</strong>
+          </p>
+        </div>
+
+        <div class="info-item">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #34d399; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Operational Hours</div>
+          <p style="margin: 0; font-size: 0.9rem; color: var(--ink-secondary);">
+            Monday through Friday: 09:00 AM – 05:30 PM<br>
+            Saturday (Event Days Only): 09:30 AM – 02:00 PM
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Inquiry Glass Form -->
+      <div class="card" style="padding: var(--space-8);">
+        <h2 style="font-size: 1.4rem; color: #ffffff; margin-bottom: var(--space-2);">Submit an Inquiry</h2>
+        <p style="color: var(--ink-secondary); font-size: 0.85rem; margin-bottom: var(--space-6);">Leave a message and the event committee will respond to your registered email.</p>
+
+        <form id="contactForm" onsubmit="handleInquirySubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="contactName" class="form-control" placeholder="e.g. Alex Morgan" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Institutional / College Email *</label>
+            <input type="email" id="contactEmail" class="form-control" placeholder="e.g. alex@college.edu" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Event or Subject Reference *</label>
+            <input type="text" id="contactSubject" class="form-control" placeholder="e.g. HackNova Team Registration Query" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Inquiry Message *</label>
+            <textarea id="contactMessage" class="form-control" rows="4" placeholder="Detail your query or request..." required></textarea>
+          </div>
+
+          <div style="margin-top: var(--space-6);">
+            <button type="submit" id="submitInquiryBtn" class="btn btn-primary btn-block btn-pill">Send Inquiry Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div style="max-width: var(--container-max); margin: 0 auto; text-align: center; color: var(--ink-secondary); font-size: 0.9rem;">
+      <strong style="color: #ffffff;">College Event Management System</strong> • Engineered with Java Spring Boot & MySQL
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    function handleInquirySubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitInquiryBtn');
+      btn.disabled = true;
+      btn.textContent = 'Transmitting...';
+
+      setTimeout(() => {
+        Toast.success('Inquiry transmitted to campus event cell. We will reply via email shortly.');
+        document.getElementById('contactForm').reset();
+        btn.disabled = false;
+        btn.textContent = 'Send Inquiry Message';
+      }, 500);
+    }
+  </script>
+</body>
+</html>

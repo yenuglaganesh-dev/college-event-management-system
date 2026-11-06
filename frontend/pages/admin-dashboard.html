@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | College Event Management System</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border-color:rgba(239, 68, 68, 0.4);">Admin Console</span>
+        </a>
+
+        <!-- Admin Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/pages/admin-dashboard.html" class="active">Dashboard</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-events.html">Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-students.html">Students</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-registrations.html">Registrations</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-reports.html">Reports</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button onclick="handleLogout()" class="btn btn-secondary btn-sm btn-pill" style="color:#f87171;">Sign Out Admin</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="dashboard-layout">
+    <!-- Admin Glass Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-user-name" id="admin-display-name">Administrator</div>
+        <div class="sidebar-user-role">System Admin • MySQL Connected</div>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="/pages/admin-dashboard.html" class="active">Dashboard Overview</a></li>
+        <li><a href="/pages/admin-registrations.html">Registration Management</a></li>
+        <li><a href="/pages/admin-events.html">Event Management</a></li>
+        <li><a href="/pages/admin-students.html">Student Directory</a></li>
+        <li><a href="/pages/admin-reports.html">Reports & Statistics</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="color:#ffffff;">Admin Telemetry Dashboard</h1>
+          <p>Real-time telemetry and management controls for college events and student registrations.</p>
+        </div>
+        <div style="display: flex; gap: var(--space-3);">
+          <a href="/pages/admin-registrations.html" class="btn btn-primary btn-sm btn-pill">Manage Registrations →</a>
+          <a href="/pages/admin-events.html" class="btn btn-secondary btn-sm btn-pill">+ Create New Event</a>
+        </div>
+      </div>
+
+      <!-- Glass KPI Metrics Row -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Registrations</div>
+          <div class="kpi-value" id="admin-kpi-total-reg">0</div>
+          <div class="kpi-subtext">All student event signups</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pending Review</div>
+          <div class="kpi-value" style="color: #fbbf24;" id="admin-kpi-pending-reg">0</div>
+          <div class="kpi-subtext">Action required</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Approved Registrations</div>
+          <div class="kpi-value" style="color: #34d399;" id="admin-kpi-approved-reg">0</div>
+          <div class="kpi-subtext">Confirmed attendees</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Active Events</div>
+          <div class="kpi-value" id="admin-kpi-active-events" style="color: #38bdf8;">0</div>
+          <div class="kpi-subtext">Accepting registrations</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Registered Students</div>
+          <div class="kpi-value" id="admin-kpi-students" style="color: var(--accent-cyan);">0</div>
+          <div class="kpi-subtext">Verified college accounts</div>
+        </div>
+      </div>
+
+      <!-- Recent Student Registrations Table -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 style="font-size: 1.15rem; color:#ffffff;">Incoming Student Registrations (Latest)</h3>
+            <p style="font-size: 0.8rem; color: var(--ink-secondary);">Automatic real-time sync with MySQL database</p>
+          </div>
+          <a href="/pages/admin-registrations.html" class="btn btn-secondary btn-sm btn-pill">Open Full Registrations Table →</a>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Reg Code</th>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Event Name</th>
+                  <th>Submitted At</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="admin-recent-tbody">
+                <tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--ink-secondary);">Loading latest registrations from MySQL...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    const user = Api.getUser();
+    if (!user || user.role !== 'ROLE_ADMIN') {
+      window.location.href = '/pages/admin-login.html';
+    } else {
+      document.getElementById('admin-display-name').textContent = user.fullName || user.username;
+    }
+
+    async function loadAdminDashboard() {
+      try {
+        const res = await Api.dashboard.getAdminStats();
+        const s = res.data;
+
+        document.getElementById('admin-kpi-total-reg').textContent = s.totalRegistrations;
+        document.getElementById('admin-kpi-pending-reg').textContent = s.pendingRegistrations;
+        document.getElementById('admin-kpi-approved-reg').textContent = s.approvedRegistrations;
+        document.getElementById('admin-kpi-active-events').textContent = s.activeEvents;
+        document.getElementById('admin-kpi-students').textContent = s.totalStudents;
+
+        const tbody = document.getElementById('admin-recent-tbody');
+        const recent = s.recentRegistrations || [];
+
+        if (recent.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--ink-secondary);">No student registrations yet. When a student registers, it will appear here immediately.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = recent.map(r => `
+          <tr>
+            <td><code>${r.registrationCode}</code></td>
+            <td><strong>${r.studentId}</strong></td>
+            <td>${r.studentName}</td>
+            <td><strong style="color:#ffffff;">${r.eventTitle}</strong></td>
+            <td>${r.registrationDateFormatted} ${r.registrationTimeFormatted}</td>
+            <td><span class="badge badge-${r.status.toLowerCase()}">${r.status}</span></td>
+            <td>
+              <a href="/pages/admin-registrations.html?search=${encodeURIComponent(r.registrationCode)}" class="btn btn-secondary btn-sm btn-pill">Manage</a>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        Toast.error('Could not load admin stats: ' + err.message);
+      }
+    }
+
+    loadAdminDashboard();
+  </script>
+</body>
+</html>

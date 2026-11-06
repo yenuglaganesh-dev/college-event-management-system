@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Event Management System | Campus Hub</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .hero-section {
+      padding: var(--space-16) var(--space-6) var(--space-12);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-card {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--bg-surface);
+      border: var(--border-glass-strong);
+      border-radius: var(--radius-xl);
+      backdrop-filter: var(--blur-lg);
+      -webkit-backdrop-filter: var(--blur-lg);
+      padding: var(--space-12) var(--space-8);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      color: #93c5fd;
+      padding: 0.35rem 0.95rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      letter-spacing: 0.03em;
+    }
+    .hero-title {
+      font-size: 3.25rem;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-4);
+      color: #ffffff;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--ink-secondary);
+      margin-bottom: var(--space-8);
+      line-height: 1.6;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .stats-strip {
+      padding: var(--space-6) 0;
+      position: relative;
+      z-index: 1;
+    }
+    .stats-container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+    .stat-tile {
+      background: var(--bg-surface);
+      border: var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      text-align: center;
+      backdrop-filter: var(--blur-md);
+      -webkit-backdrop-filter: var(--blur-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    .stat-number {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.25rem;
+    }
+    .section-container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: var(--space-12) var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+    .section-header {
+      margin-bottom: var(--space-8);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge">Glass Tab UI</span>
+        </a>
+
+        <!-- Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/index.html" class="active">Home</a></li>
+          <li class="glass-tab-item"><a href="/pages/events.html">Browse Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/about.html">About</a></li>
+          <li class="glass-tab-item"><a href="/pages/contact.html">Contact</a></li>
+        </ul>
+
+        <div class="navbar-actions" id="navbar-auth-actions"></div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Hero Section with Frosted Glass Card -->
+  <header class="hero-section">
+    <div class="hero-card">
+      <div class="hero-badge">Official Campus Event Platform • Spring 2026</div>
+      <h1 class="hero-title">Experience Campus Events with Modern Clarity</h1>
+      <p class="hero-subtitle">
+        A centralized university platform for technical hackathons, cultural festivals, academic symposiums, and sports championships. Register with your college credentials and track status updates in real time.
+      </p>
+      <div class="hero-actions">
+        <a href="/pages/events.html" class="btn btn-primary btn-pill" style="padding: 0.75rem 1.85rem; font-size: 1rem;">
+          Explore Events →
+        </a>
+        <a href="/pages/register.html" class="btn btn-secondary btn-pill" style="padding: 0.75rem 1.85rem; font-size: 1rem;">
+          Student Sign Up
+        </a>
+        <a href="/pages/admin-login.html" class="btn btn-secondary btn-pill" style="padding: 0.75rem 1.35rem; font-size: 0.9rem;">
+          Admin Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Stats Strip -->
+  <section class="stats-strip">
+    <div class="stats-container">
+      <div class="stat-tile">
+        <div class="stat-number" id="stat-total-events">4+</div>
+        <div class="stat-label">Major Events Scheduled</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-number" id="stat-active-events" style="color:#34d399;">Active</div>
+        <div class="stat-label">Registrations Live</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-number" id="stat-total-students" style="color:var(--accent-cyan);">100%</div>
+        <div class="stat-label">MySQL Persistence</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-number" style="color:#38bdf8;">Real-Time</div>
+        <div class="stat-label">Student-to-Admin Sync</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Events Section -->
+  <main class="section-container">
+    <div class="section-header">
+      <div>
+        <h2 style="color:#ffffff;">Featured Campus Events</h2>
+        <p>Browse upcoming sessions, check seat availability, and register instantly.</p>
+      </div>
+      <a href="/pages/events.html" class="btn btn-secondary btn-sm btn-pill">View All Events →</a>
+    </div>
+
+    <div class="events-grid" id="featured-events-grid">
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--ink-secondary);">
+        Connecting to MySQL backend...
+      </div>
+    </div>
+  </main>
+
+  <!-- Glass Workflow Highlights -->
+  <section class="section-container" style="padding-top: 0;">
+    <div style="background: var(--bg-surface); border: var(--border-glass); border-radius: var(--radius-xl); padding: var(--space-8); backdrop-filter: var(--blur-md); box-shadow: 0 10px 30px rgba(0,0,0,0.35);">
+      <h3 style="text-align: center; margin-bottom: var(--space-3); color:#ffffff;">Unified Event Lifecycle Architecture</h3>
+      <p style="text-align: center; max-width: 650px; margin: 0 auto var(--space-8); color: var(--ink-secondary);">
+        Engineered with Java 21 Spring Boot and MySQL for transactional integrity, capacity protection, and instant administrative review.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-6);">
+        <div style="background: rgba(255,255,255,0.03); border: var(--border-glass-subtle); border-radius: var(--radius-md); padding: var(--space-6);">
+          <div style="color: #60a5fa; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.25rem;">Phase: Student Access</div>
+          <h4 style="font-size: 1.1rem; margin-bottom: 0.5rem; color:#ffffff;">Student Authentication</h4>
+          <p style="font-size: 0.85rem;">Secure JWT login using your college student ID. Profiles are bound automatically without repetitive data entry.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: var(--border-glass-subtle); border-radius: var(--radius-md); padding: var(--space-6);">
+          <div style="color: var(--accent-cyan); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.25rem;">Phase: Seat Allocation</div>
+          <h4 style="font-size: 1.1rem; margin-bottom: 0.5rem; color:#ffffff;">One-Click Registration</h4>
+          <p style="font-size: 0.85rem;">Capacity limits and duplicate checks are enforced at service and database unique constraint levels.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: var(--border-glass-subtle); border-radius: var(--radius-md); padding: var(--space-6);">
+          <div style="color: #34d399; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.25rem;">Phase: Live Verification</div>
+          <h4 style="font-size: 1.1rem; margin-bottom: 0.5rem; color:#ffffff;">Admin Review & Sync</h4>
+          <p style="font-size: 0.85rem;">Admins review registrations in the glass telemetry console, approve with audit remarks, and update MySQL.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Glass Footer -->
+  <footer>
+    <div style="max-width: var(--container-max); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <strong style="color:#ffffff;">College Event Management System</strong> • Premium Glass Tab UI
+      </div>
+      <div>
+        <a href="/pages/admin-login.html" style="margin-right: 1.5rem;">Admin Access</a>
+        <a href="/pages/login.html" style="margin-right: 1.5rem;">Student Login</a>
+        <a href="/pages/contact.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    async function loadFeaturedEvents() {
+      const container = document.getElementById('featured-events-grid');
+      try {
+        const res = await Api.events.getActive();
+        const events = res.data || [];
+        if (events.length === 0) {
+          container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">No upcoming events currently scheduled.</div>';
+          return;
+        }
+
+        container.innerHTML = events.slice(0, 3).map(event => `
+          <div class="event-card">
+            <img src="${event.imageUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80'}" alt="${event.title}" class="event-card-img" />
+            <div class="event-card-body">
+              <div class="event-card-meta">
+                <span class="badge badge-active">${event.category}</span>
+                <span>Date: ${event.eventDate}</span>
+                <span>Time: ${event.eventTime}</span>
+              </div>
+              <h3 class="event-card-title">${event.title}</h3>
+              <p class="event-card-desc">${event.description}</p>
+              <div style="font-size: 0.8rem; color: var(--ink-secondary); margin-top: auto;">
+                <strong>Venue:</strong> ${event.venue}
+              </div>
+            </div>
+            <div class="event-card-footer">
+              <span style="font-size: 0.8rem; font-weight: 600; color: ${event.full ? '#f87171' : '#38bdf8'};">
+                ${event.full ? 'Capacity Full' : `${event.currentRegistrations} / ${event.maxCapacity} Seats`}
+              </span>
+              <a href="/pages/event-details.html?id=${event.id}" class="btn btn-primary btn-sm btn-pill">
+                View & Register →
+              </a>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="grid-column:1 / -1; color:#f87171; padding:2rem; text-align:center;">Failed to load events from backend: ${err.message}</div>`;
+      }
+    }
+
+    async function loadPublicStats() {
+      try {
+        const res = await Api.dashboard.getPublicStats();
+        if (res.data) {
+          document.getElementById('stat-total-events').textContent = res.data.totalEvents || '0';
+          document.getElementById('stat-active-events').textContent = (res.data.activeEvents || '0') + ' Active';
+        }
+      } catch (e) {
+        console.warn('Could not load public stats', e);
+      }
+    }
+
+    loadFeaturedEvents();
+    loadPublicStats();
+  </script>
+</body>
+</html>

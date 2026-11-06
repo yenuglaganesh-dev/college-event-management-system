@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Directory | Admin Portal</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .filter-section {
+      background: var(--bg-surface);
+      border: var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4) var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: var(--blur-md);
+      -webkit-backdrop-filter: var(--blur-md);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    }
+    .filter-controls {
+      display: flex;
+      gap: var(--space-3);
+      flex: 1;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="glass-ambient-1"></div>
+  <div class="glass-ambient-2"></div>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border-color:rgba(239, 68, 68, 0.4);">Admin Console</span>
+        </a>
+
+        <!-- Admin Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/pages/admin-dashboard.html">Dashboard</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-events.html">Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-students.html" class="active">Students</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-registrations.html">Registrations</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-reports.html">Reports</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button onclick="handleLogout()" class="btn btn-secondary btn-sm btn-pill" style="color:#f87171;">Sign Out Admin</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="dashboard-layout">
+    <!-- Admin Glass Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-user-name" id="admin-display-name">Administrator</div>
+        <div class="sidebar-user-role">System Admin • MySQL Connected</div>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="/pages/admin-dashboard.html">Dashboard Overview</a></li>
+        <li><a href="/pages/admin-registrations.html">Registration Management</a></li>
+        <li><a href="/pages/admin-events.html">Event Management</a></li>
+        <li><a href="/pages/admin-students.html" class="active">Student Directory</a></li>
+        <li><a href="/pages/admin-reports.html">Reports & Statistics</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="color:#ffffff;">REGISTERED STUDENTS DIRECTORY</h1>
+          <p>Verified student profiles, department affiliations, and participation telemetry.</p>
+        </div>
+        <div style="display: flex; gap: var(--space-3);">
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="loadStudents()">Refresh Directory</button>
+        </div>
+      </div>
+
+      <!-- Glass Filters & Search -->
+      <div class="filter-section">
+        <div class="filter-controls">
+          <input type="text" id="studentSearch" class="form-control" style="max-width: 280px;" placeholder="Search name, ID, email..." onkeyup="filterStudents()" />
+          <select id="departmentFilter" class="form-select" style="max-width: 200px;" onchange="filterStudents()">
+            <option value="">All Departments</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Information Technology">Information Technology</option>
+            <option value="Electronics & Communication">Electronics & Communication</option>
+            <option value="Mechanical Engineering">Mechanical Engineering</option>
+            <option value="Civil Engineering">Civil Engineering</option>
+          </select>
+          <select id="yearFilter" class="form-select" style="max-width: 140px;" onchange="filterStudents()">
+            <option value="">All Years</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="resetFilters()">Reset</button>
+        </div>
+        <div id="studentCountBadge" style="font-size: 0.85rem; color: var(--ink-secondary);">
+          Showing 0 students
+        </div>
+      </div>
+
+      <!-- Glass Students Table -->
+      <div class="card">
+        <div class="card-body" style="padding: 0;">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Full Name</th>
+                  <th>College Email</th>
+                  <th>Phone Number</th>
+                  <th>Department</th>
+                  <th>Year</th>
+                  <th>Total Events</th>
+                  <th>Joined Date</th>
+                </tr>
+              </thead>
+              <tbody id="students-tbody">
+                <tr><td colspan="8" style="text-align:center; padding:3rem; color:var(--ink-secondary);">Loading student accounts from MySQL database...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    const user = Api.getUser();
+    if (!user || user.role !== 'ROLE_ADMIN') {
+      window.location.href = '/pages/admin-login.html';
+    } else {
+      document.getElementById('admin-display-name').textContent = user.fullName || user.username;
+    }
+
+    let allStudents = [];
+
+    async function loadStudents() {
+      const tbody = document.getElementById('students-tbody');
+      try {
+        const res = await Api.students.getAllForAdmin();
+        allStudents = res.data || [];
+        filterStudents();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="color:#ef4444; text-align:center; padding:2rem;">Error: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderStudents(list) {
+      const tbody = document.getElementById('students-tbody');
+      const counter = document.getElementById('studentCountBadge');
+      counter.textContent = `Showing ${list.length} of ${allStudents.length} students`;
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:3rem; color:var(--ink-secondary);">No student records found matching your filters.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td><code style="color:var(--accent-cyan); font-weight:600;">${s.studentId}</code></td>
+          <td><strong style="color:#ffffff;">${s.fullName}</strong></td>
+          <td><a href="mailto:${s.email}" style="color:var(--accent-primary); text-decoration:none;">${s.email}</a></td>
+          <td>${s.phone || 'N/A'}</td>
+          <td><span class="badge" style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; border:1px solid rgba(56, 189, 248, 0.3);">${s.department || 'General'}</span></td>
+          <td>Year ${s.yearOfStudy || '1'}</td>
+          <td>
+            <span class="badge badge-approved" style="font-weight:600;">
+              ${s.totalRegistrations || 0} Registered
+            </span>
+          </td>
+          <td style="color:var(--ink-secondary); font-size:0.85rem;">${new Date(s.createdAt).toLocaleDateString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterStudents() {
+      const q = (document.getElementById('studentSearch').value || '').toLowerCase();
+      const dept = document.getElementById('departmentFilter').value;
+      const year = document.getElementById('yearFilter').value;
+
+      const filtered = allStudents.filter(s => {
+        const matchesQ = !q ||
+          (s.studentId && s.studentId.toLowerCase().includes(q)) ||
+          (s.fullName && s.fullName.toLowerCase().includes(q)) ||
+          (s.email && s.email.toLowerCase().includes(q));
+        const matchesDept = !dept || (s.department && s.department.toLowerCase().includes(dept.toLowerCase()));
+        const matchesYear = !year || String(s.yearOfStudy) === String(year);
+        return matchesQ && matchesDept && matchesYear;
+      });
+
+      renderStudents(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('studentSearch').value = '';
+      document.getElementById('departmentFilter').value = '';
+      document.getElementById('yearFilter').value = '';
+      renderStudents(allStudents);
+    }
+
+    loadStudents();
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports & Statistics | Admin Portal</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: var(--space-6);
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+    .util-item {
+      padding: var(--space-4);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-3);
+    }
+    .util-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: var(--space-2);
+    }
+    .util-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="glass-ambient-1"></div>
+  <div class="glass-ambient-2"></div>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border-color:rgba(239, 68, 68, 0.4);">Admin Console</span>
+        </a>
+
+        <!-- Admin Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/pages/admin-dashboard.html">Dashboard</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-events.html">Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-students.html">Students</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-registrations.html">Registrations</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-reports.html" class="active">Reports</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button onclick="handleLogout()" class="btn btn-secondary btn-sm btn-pill" style="color:#f87171;">Sign Out Admin</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="dashboard-layout">
+    <!-- Admin Glass Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-user-name" id="admin-display-name">Administrator</div>
+        <div class="sidebar-user-role">System Admin • MySQL Connected</div>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="/pages/admin-dashboard.html">Dashboard Overview</a></li>
+        <li><a href="/pages/admin-registrations.html">Registration Management</a></li>
+        <li><a href="/pages/admin-events.html">Event Management</a></li>
+        <li><a href="/pages/admin-students.html">Student Directory</a></li>
+        <li><a href="/pages/admin-reports.html" class="active">Reports & Statistics</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="color:#ffffff;">ANALYTICS & INSTITUTIONAL REPORTS</h1>
+          <p>Registration telemetry, capacity breakdown, and institutional participation metrics from MySQL.</p>
+        </div>
+        <div style="display: flex; gap: var(--space-3);">
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="window.print()">Print / Export PDF</button>
+          <button class="btn btn-primary btn-sm btn-pill" onclick="loadReports()">Refresh Analytics</button>
+        </div>
+      </div>
+
+      <!-- Glass KPI Metrics Row -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Submissions</div>
+          <div class="kpi-value" id="kpi-total-reg">0</div>
+          <div class="kpi-subtext">All time registrations</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Approved</div>
+          <div class="kpi-value" style="color: #34d399;" id="kpi-approved-reg">0</div>
+          <div class="kpi-subtext">Confirmed attendees</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pending Action</div>
+          <div class="kpi-value" style="color: #fbbf24;" id="kpi-pending-reg">0</div>
+          <div class="kpi-subtext">Awaiting administrative decision</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Rejected / Cancelled</div>
+          <div class="kpi-value" style="color: #f87171;" id="kpi-rejected-reg">0</div>
+          <div class="kpi-subtext">Disallowed or withdrawn</div>
+        </div>
+      </div>
+
+      <div class="report-grid">
+        <!-- Status Distribution Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 style="color:#ffffff; font-size:1.15rem;">Registration Status Breakdown</h3>
+              <p style="font-size:0.8rem; color:var(--ink-secondary);">Relational breakdown of all student applications</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="metric-row">
+              <span style="font-weight:500;">Total Registrations Ingested</span>
+              <strong id="rep-total" style="color:#ffffff; font-size:1.1rem;">0</strong>
+            </div>
+            <div class="metric-row">
+              <span style="display:flex; align-items:center; gap:0.5rem;">
+                <span class="badge badge-approved">Approved</span>
+                <span>Confirmed & Seat Allocated</span>
+              </span>
+              <strong id="rep-approved" style="color:#34d399; font-size:1.1rem;">0</strong>
+            </div>
+            <div class="metric-row">
+              <span style="display:flex; align-items:center; gap:0.5rem;">
+                <span class="badge badge-pending">Pending Review</span>
+                <span>Requires Verification</span>
+              </span>
+              <strong id="rep-pending" style="color:#fbbf24; font-size:1.1rem;">0</strong>
+            </div>
+            <div class="metric-row">
+              <span style="display:flex; align-items:center; gap:0.5rem;">
+                <span class="badge badge-rejected">Rejected</span>
+                <span>Declined by Committee</span>
+              </span>
+              <strong id="rep-rejected" style="color:#f87171; font-size:1.1rem;">0</strong>
+            </div>
+            <div class="metric-row">
+              <span style="display:flex; align-items:center; gap:0.5rem;">
+                <span class="badge badge-cancelled">Cancelled</span>
+                <span>Self-withdrawn by Student</span>
+              </span>
+              <strong id="rep-cancelled" style="color:#94a3b8; font-size:1.1rem;">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Capacity Utilization Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 style="color:#ffffff; font-size:1.15rem;">Event Capacity & Occupancy</h3>
+              <p style="font-size:0.8rem; color:var(--ink-secondary);">Live seat utilization against maximum limits</p>
+            </div>
+          </div>
+          <div class="card-body" id="event-util-container">
+            <div style="text-align:center; padding:2rem; color:var(--ink-secondary);">Loading event metrics from MySQL...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    const user = Api.getUser();
+    if (!user || user.role !== 'ROLE_ADMIN') {
+      window.location.href = '/pages/admin-login.html';
+    } else {
+      document.getElementById('admin-display-name').textContent = user.fullName || user.username;
+    }
+
+    async function loadReports() {
+      try {
+        const statsRes = await Api.dashboard.getAdminStats();
+        const s = statsRes.data;
+
+        document.getElementById('kpi-total-reg').textContent = s.totalRegistrations;
+        document.getElementById('kpi-approved-reg').textContent = s.approvedRegistrations;
+        document.getElementById('kpi-pending-reg').textContent = s.pendingRegistrations;
+        document.getElementById('kpi-rejected-reg').textContent = (s.rejectedRegistrations || 0) + (s.cancelledRegistrations || 0);
+
+        document.getElementById('rep-total').textContent = s.totalRegistrations;
+        document.getElementById('rep-approved').textContent = s.approvedRegistrations;
+        document.getElementById('rep-pending').textContent = s.pendingRegistrations;
+        document.getElementById('rep-rejected').textContent = s.rejectedRegistrations;
+        document.getElementById('rep-cancelled').textContent = s.cancelledRegistrations;
+
+        const eventsRes = await Api.events.getAll();
+        const events = eventsRes.data || [];
+        const container = document.getElementById('event-util-container');
+
+        if (events.length === 0) {
+          container.innerHTML = '<div style="color:var(--ink-secondary); text-align:center; padding:2rem;">No events found in database.</div>';
+          return;
+        }
+
+        container.innerHTML = events.map(e => {
+          const regCount = e.currentRegistrations || 0;
+          const pct = Math.min(100, Math.round((regCount / e.maxCapacity) * 100));
+          let barColor = 'var(--accent-cyan)';
+          if (pct >= 90) barColor = '#ef4444';
+          else if (pct >= 70) barColor = '#f59e0b';
+
+          return `
+            <div class="util-item">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="color:#ffffff;">${e.title}</strong>
+                <span class="badge" style="background:rgba(255,255,255,0.06); color:var(--ink-secondary); border:1px solid rgba(255,255,255,0.1); font-size:0.75rem;">${e.category}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--ink-secondary);">
+                <span>${e.venue} • ${e.eventDate}</span>
+                <span style="color:#ffffff; font-weight:600;">${regCount} / ${e.maxCapacity} seats (${pct}%)</span>
+              </div>
+              <div class="util-bar">
+                <div class="util-fill" style="width: ${pct}%; background: ${barColor};"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        Toast.error('Error loading reports: ' + err.message);
+      }
+    }
+
+    loadReports();
+  </script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Management | Admin Portal</title>
+  <link rel="stylesheet" href="/css/taste-theme.css">
+  <style>
+    .filter-section {
+      background: var(--bg-surface);
+      border: var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4) var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: var(--blur-md);
+      -webkit-backdrop-filter: var(--blur-md);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    }
+    .filter-controls {
+      display: flex;
+      gap: var(--space-3);
+      flex: 1;
+      flex-wrap: wrap;
+    }
+    .capacity-bar {
+      height: 6px;
+      width: 100%;
+      max-width: 120px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .capacity-fill {
+      height: 100%;
+      background: var(--accent-cyan);
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="glass-ambient-1"></div>
+  <div class="glass-ambient-2"></div>
+
+  <!-- Floating Glass Tab Navigation -->
+  <div class="glass-nav-wrapper">
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="/index.html" class="navbar-brand">
+          <span>CollegeEvents</span>
+          <span class="brand-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border-color:rgba(239, 68, 68, 0.4);">Admin Console</span>
+        </a>
+
+        <!-- Admin Glass Tabs -->
+        <ul class="glass-tabs">
+          <li class="glass-tab-item"><a href="/pages/admin-dashboard.html">Dashboard</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-events.html" class="active">Events</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-students.html">Students</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-registrations.html">Registrations</a></li>
+          <li class="glass-tab-item"><a href="/pages/admin-reports.html">Reports</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+          <button onclick="handleLogout()" class="btn btn-secondary btn-sm btn-pill" style="color:#f87171;">Sign Out Admin</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="dashboard-layout">
+    <!-- Admin Glass Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-user-name" id="admin-display-name">Administrator</div>
+        <div class="sidebar-user-role">System Admin • MySQL Connected</div>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="/pages/admin-dashboard.html">Dashboard Overview</a></li>
+        <li><a href="/pages/admin-registrations.html">Registration Management</a></li>
+        <li><a href="/pages/admin-events.html" class="active">Event Management</a></li>
+        <li><a href="/pages/admin-students.html">Student Directory</a></li>
+        <li><a href="/pages/admin-reports.html">Reports & Statistics</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="color:#ffffff;">COLLEGE EVENT MANAGEMENT</h1>
+          <p>Create, update, monitor capacity limits, and schedule campus events stored in MySQL.</p>
+        </div>
+        <div style="display: flex; gap: var(--space-3);">
+          <button class="btn btn-primary btn-sm btn-pill" onclick="openCreateModal()">+ Add New Event</button>
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="loadAllEvents()">Refresh</button>
+        </div>
+      </div>
+
+      <!-- Glass Filters & Search -->
+      <div class="filter-section">
+        <div class="filter-controls">
+          <input type="text" id="eventSearchInput" class="form-control" style="max-width: 280px;" placeholder="Search title, venue, category..." onkeyup="filterEvents()" />
+          <select id="eventCategoryFilter" class="form-select" style="max-width: 180px;" onchange="filterEvents()">
+            <option value="">All Categories</option>
+            <option value="Technical">Technical</option>
+            <option value="Cultural">Cultural</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Sports">Sports</option>
+            <option value="Seminar">Seminar</option>
+          </select>
+          <select id="eventStatusFilter" class="form-select" style="max-width: 160px;" onchange="filterEvents()">
+            <option value="">All Statuses</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="COMPLETED">COMPLETED</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </select>
+          <button class="btn btn-secondary btn-sm btn-pill" onclick="resetFilters()">Reset</button>
+        </div>
+        <div id="eventCounter" style="font-size: 0.85rem; color: var(--ink-secondary);">
+          Showing 0 events
+        </div>
+      </div>
+
+      <!-- Glass Events Table -->
+      <div class="card">
+        <div class="card-body" style="padding: 0;">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Event Title</th>
+                  <th>Category</th>
+                  <th>Date & Time</th>
+                  <th>Venue</th>
+                  <th>Capacity</th>
+                  <th>Deadline</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-events-tbody">
+                <tr><td colspan="9" style="text-align:center; padding:3rem; color:var(--ink-secondary);">Loading events from MySQL database...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Event Modal -->
+  <div class="modal-overlay" id="eventModal">
+    <div class="modal" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 id="eventModalTitle" style="color:#ffffff;">Add New College Event</h3>
+        <button onclick="closeEventModal()" style="border:none; background:none; font-size:1.4rem; line-height:1; color:var(--ink-secondary); cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="eventForm" onsubmit="handleSaveEvent(event)">
+          <input type="hidden" id="eventEditId" />
+
+          <div class="form-group">
+            <label class="form-label">Event Title *</label>
+            <input type="text" id="evTitle" class="form-control" placeholder="e.g. Annual Tech Symposium 2026" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="evCategory" class="form-select" required>
+                <option value="Technical">Technical</option>
+                <option value="Cultural">Cultural</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Sports">Sports</option>
+                <option value="Seminar">Seminar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status *</label>
+              <select id="evStatus" class="form-select" required>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea id="evDescription" class="form-control" rows="3" placeholder="Provide event schedule, eligibility criteria, requirements..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Venue Location *</label>
+            <input type="text" id="evVenue" class="form-control" placeholder="e.g. Main Auditorium, Campus Block 3" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label">Event Date *</label>
+              <input type="date" id="evDate" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Event Time *</label>
+              <input type="text" id="evTime" class="form-control" placeholder="e.g. 10:00 AM" required />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label">Registration Deadline *</label>
+              <input type="datetime-local" id="evDeadline" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Capacity *</label>
+              <input type="number" id="evCapacity" class="form-control" min="1" placeholder="e.g. 100" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Banner Image URL (Optional)</label>
+            <input type="url" id="evImageUrl" class="form-control" placeholder="https://..." />
+          </div>
+
+          <div style="margin-top: var(--space-6); display: flex; justify-content: flex-end; gap: var(--space-3);">
+            <button type="button" class="btn btn-secondary btn-pill" onclick="closeEventModal()">Cancel</button>
+            <button type="submit" id="saveEventBtn" class="btn btn-primary btn-pill">Save Event to MySQL</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script>
+    const user = Api.getUser();
+    if (!user || user.role !== 'ROLE_ADMIN') {
+      window.location.href = '/pages/admin-login.html';
+    } else {
+      document.getElementById('admin-display-name').textContent = user.fullName || user.username;
+    }
+
+    let rawEvents = [];
+
+    async function loadAllEvents() {
+      const tbody = document.getElementById('admin-events-tbody');
+      try {
+        const res = await Api.events.getAll();
+        rawEvents = res.data || [];
+        filterEvents();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" style="color:#ef4444; text-align:center; padding:2rem;">Error: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderEvents(list) {
+      const tbody = document.getElementById('admin-events-tbody');
+      const counter = document.getElementById('eventCounter');
+      counter.textContent = `Showing ${list.length} of ${rawEvents.length} events`;
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:3rem; color:var(--ink-secondary);">No events found matching your criteria.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(e => {
+        const pct = Math.min(100, Math.round(((e.currentRegistrations || 0) / e.maxCapacity) * 100));
+        const statusBadgeClass = e.status === 'ACTIVE' ? 'badge-approved' : (e.status === 'COMPLETED' ? 'badge-pending' : 'badge-rejected');
+        return `
+          <tr>
+            <td><code style="color:var(--accent-cyan); font-weight:600;">#${e.id}</code></td>
+            <td>
+              <strong style="color:#ffffff;">${e.title}</strong>
+              <div style="font-size:0.75rem; color:var(--ink-secondary); margin-top:2px;">${e.venue}</div>
+            </td>
+            <td><span class="badge" style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; border:1px solid rgba(56, 189, 248, 0.3);">${e.category}</span></td>
+            <td>
+              <div>${e.eventDate}</div>
+              <div style="font-size:0.75rem; color:var(--ink-secondary);">${e.eventTime}</div>
+            </td>
+            <td>${e.venue}</td>
+            <td>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:2px;">
+                <span>${e.currentRegistrations || 0} / ${e.maxCapacity}</span>
+                <span style="color:var(--ink-secondary);">${pct}%</span>
+              </div>
+              <div class="capacity-bar">
+                <div class="capacity-fill" style="width: ${pct}%;"></div>
+              </div>
+            </td>
+            <td>
+              <div style="font-size:0.85rem;">${new Date(e.registrationDeadline).toLocaleDateString()}</div>
+              <div style="font-size:0.75rem; color:var(--ink-secondary);">${new Date(e.registrationDeadline).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+            </td>
+            <td><span class="badge ${statusBadgeClass}">${e.status}</span></td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button onclick="openEditModal(${e.id})" class="btn btn-secondary btn-sm btn-pill" style="margin-right: 4px;">Edit</button>
+              <button onclick="handleDeleteEvent(${e.id}, '${e.title.replace(/'/g, "\\'")}')" class="btn btn-danger btn-sm btn-pill">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterEvents() {
+      const q = (document.getElementById('eventSearchInput').value || '').toLowerCase();
+      const cat = document.getElementById('eventCategoryFilter').value;
+      const status = document.getElementById('eventStatusFilter').value;
+
+      const filtered = rawEvents.filter(e => {
+        const matchesQ = !q || e.title.toLowerCase().includes(q) || e.venue.toLowerCase().includes(q) || e.category.toLowerCase().includes(q);
+        const matchesCat = !cat || e.category === cat;
+        const matchesStatus = !status || e.status === status;
+        return matchesQ && matchesCat && matchesStatus;
+      });
+
+      renderEvents(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('eventSearchInput').value = '';
+      document.getElementById('eventCategoryFilter').value = '';
+      document.getElementById('eventStatusFilter').value = '';
+      renderEvents(rawEvents);
+    }
+
+    function openCreateModal() {
+      document.getElementById('eventEditId').value = '';
+      document.getElementById('eventModalTitle').textContent = 'Add New College Event';
+      document.getElementById('eventForm').reset();
+      
+      const today = new Date();
+      const inTwoWeeks = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+      const inTenDays = new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000);
+
+      document.getElementById('evDate').value = inTwoWeeks.toISOString().slice(0, 10);
+      document.getElementById('evTime').value = '10:00 AM';
+      document.getElementById('evDeadline').value = inTenDays.toISOString().slice(0, 16);
+      document.getElementById('evCapacity').value = '100';
+
+      document.getElementById('eventModal').classList.add('active');
+    }
+
+    function openEditModal(id) {
+      const e = rawEvents.find(x => x.id === id);
+      if (!e) return;
+
+      document.getElementById('eventEditId').value = e.id;
+      document.getElementById('eventModalTitle').textContent = `Edit Event #${e.id}: ${e.title}`;
+      document.getElementById('evTitle').value = e.title;
+      document.getElementById('evCategory').value = e.category;
+      document.getElementById('evStatus').value = e.status;
+      document.getElementById('evDescription').value = e.description;
+      document.getElementById('evVenue').value = e.venue;
+      document.getElementById('evDate').value = e.eventDate;
+      document.getElementById('evTime').value = e.eventTime;
+      document.getElementById('evDeadline').value = e.registrationDeadline ? e.registrationDeadline.slice(0, 16) : '';
+      document.getElementById('evCapacity').value = e.maxCapacity;
+      document.getElementById('evImageUrl').value = e.imageUrl || '';
+
+      document.getElementById('eventModal').classList.add('active');
+    }
+
+    function closeEventModal() {
+      document.getElementById('eventModal').classList.remove('active');
+    }
+
+    async function handleSaveEvent(e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveEventBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving to MySQL...';
+
+      const editId = document.getElementById('eventEditId').value;
+      const data = {
+        title: document.getElementById('evTitle').value.trim(),
+        category: document.getElementById('evCategory').value,
+        status: document.getElementById('evStatus').value,
+        description: document.getElementById('evDescription').value.trim(),
+        venue: document.getElementById('evVenue').value.trim(),
+        eventDate: document.getElementById('evDate').value,
+        eventTime: document.getElementById('evTime').value.trim(),
+        registrationDeadline: document.getElementById('evDeadline').value,
+        maxCapacity: parseInt(document.getElementById('evCapacity').value, 10),
+        imageUrl: document.getElementById('evImageUrl').value.trim() || null
+      };
+
+      try {
+        if (editId) {
+          await Api.events.update(editId, data);
+          Toast.success('Event updated successfully in MySQL');
+        } else {
+          await Api.events.create(data);
+          Toast.success('Event created successfully in MySQL');
+        }
+        closeEventModal();
+        loadAllEvents();
+      } catch (err) {
+        Toast.error(err.message || 'Operation failed');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Event to MySQL';
+      }
+    }
+
+    async function handleDeleteEvent(id, title) {
+      if (!confirm(`Are you sure you want to delete event "${title}"? This will permanently delete the event and its associated student registrations from MySQL.`)) {
+        return;
+      }
+
+      try {
+        await Api.events.delete(id);
+        Toast.success('Event deleted from MySQL database');
+        loadAllEvents();
+      } catch (err) {
+        Toast.error(err.message || 'Could not delete event');
+      }
+    }
+
+    loadAllEvents();
+  </script>
+</body>
+</html>
