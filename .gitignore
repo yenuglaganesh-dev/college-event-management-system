@@ -5,4 +5,5 @@ backend/target/
 .taste-skill/
 .DS_Store
 Thumbs.db
+.vscode/
 
