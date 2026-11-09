@@ -1005,7 +1005,7 @@ a:hover {
   color: var(--primary-orange);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .nav-tab-list {
     display: none !important;
   }

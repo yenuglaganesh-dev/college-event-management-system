@@ -1,0 +1,12 @@
+{
+  "name": "college-event-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "College Event Management System (CEMS) - Centurion University AP",
+  "scripts": {
+    "build": "npm --prefix frontend-react run build",
+    "install:frontend": "npm --prefix frontend-react install",
+    "dev": "npm --prefix frontend-react run dev",
+    "preview": "npm --prefix frontend-react run preview"
+  }
+}
