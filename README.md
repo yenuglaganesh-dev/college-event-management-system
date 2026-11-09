@@ -454,7 +454,113 @@ Dedicated gallery section showcasing the placed students of 2026.
 
 ---
 
-## 18. Future Enhancements
+## 18. Website Images and Assets
+
+All visual assets used across the **College Event Management System (CEMS)** are stored locally within the repository to guarantee **zero broken links, sub-millisecond local caching, and 100% offline-ready reliability**. No third-party image hosting or external CDNs are required.
+
+### 📁 Asset Directory Structure
+```text
+frontend-react/
+├── public/
+│   ├── centurion-logo.png             # Official Centurion University crest & wordmark (Primary)
+│   ├── centurion-logo.svg             # Scalable vector logo for high-DPI displays
+│   ├── favicon.svg                    # Browser tab icon
+│   ├── icons.svg                      # Custom SVG sprite symbols
+│   └── cutmap_events/                 # 55+ Verified CUTM AP Event Photos & Placement Banners
+│       ├── cutmap_gajajyoti_inauguration.jpg
+│       ├── cutmap_vyomang_day1.jpg
+│       ├── cutmap_vyomang_day2.jpg
+│       ├── cutmap_semicon_arena.jpg
+│       ├── cutmap_quantum_day_2026.jpg
+│       ├── cutmap_cardio_pulmonary.jpg
+│       ├── cutmap_pharma_anveshan.jpg
+│       ├── cutmap_public_speaking.jpg
+│       ├── cutmap_placement_students_2026.jpg
+│       ├── cutmap_placement_2026_1.jpg ... cutmap_placement_2026_16.jpg
+│       └── ...
+└── src/assets/
+    ├── centurion-logo.png             # Bundled static logo asset
+    └── hero.png                       # Decorative landing page illustration
+```
+
+---
+
+### 🖼️ Complete Image Inventory & Mapping
+
+| Asset Filename | Public Web Path | Format | Type | Used In | Section / Event Context |
+| :--- | :--- | :---: | :---: | :--- | :--- |
+| `centurion-logo.png` | `/centurion-logo.png` | PNG | Local | Navbar, Footer, Auth Cards | University Brand Header, Login & Register cards |
+| `centurion-logo.svg` | `/centurion-logo.svg` | SVG | Local | Verification, Certificates | Official Certificate background watermark |
+| `cutmap_gajajyoti_inauguration.jpg` | `/cutmap_events/cutmap_gajajyoti_inauguration.jpg` | JPG | Local | Events, Details, Gallery | Gajajyoti 2026 Annual Cultural Fest Inauguration |
+| `cutmap_vyomang_day1.jpg` | `/cutmap_events/cutmap_vyomang_day1.jpg` | JPG | Local | Events, Details, Gallery | Vyomang National Aerospace Conclave (Day 1) |
+| `cutmap_vyomang_day2.jpg` | `/cutmap_events/cutmap_vyomang_day2.jpg` | JPG | Local | Events, Details, Gallery | Vyomang Drone Races & Flight Simulations (Day 2) |
+| `cutmap_public_speaking.jpg` | `/cutmap_events/cutmap_public_speaking.jpg` | JPG | Local | Events, Details, Gallery | Inter-Departmental Elocution & Debate Championship |
+| `cutmap_cardio_pulmonary.jpg` | `/cutmap_events/cutmap_cardio_pulmonary.jpg` | JPG | Local | Events, Details, Gallery | Basic Life Support (BLS) & CPR Clinical Workshop |
+| `cutmap_pharma_anveshan.jpg` | `/cutmap_events/cutmap_pharma_anveshan.jpg` | JPG | Local | Events, Details, Gallery | Pharma Anveshan Research & Drug Discovery Expo |
+| `cutmap_semicon_arena.jpg` | `/cutmap_events/cutmap_semicon_arena.jpg` | JPG | Local | Events, Details, Gallery | Semicon Arena VLSI Chip Design & Embedded Systems |
+| `cutmap_quantum_day_2026.jpg` | `/cutmap_events/cutmap_quantum_day_2026.jpg` | JPG | Local | Events, Details, Gallery | National Science Day Quantum Computing Colloquium |
+| `cutmap_womens_day_2026.jpg` | `/cutmap_events/cutmap_womens_day_2026.jpg` | JPG | Local | Events, Details, Gallery | International Women's Day Leadership Conclave |
+| `cutmap_lan_hackathon.jpg` | `/cutmap_events/cutmap_lan_hackathon.jpg` | JPG | Local | Events, Details, Gallery | 24-Hour Campus Hackathon Arena & Coding Sprint |
+| `cutmap_lan_finals.jpg` | `/cutmap_events/cutmap_lan_finals.jpg` | JPG | Local | Events, Details, Gallery | Esports & LAN Gaming Championships |
+| `cutmap_ai_product_dev.jpg` | `/cutmap_events/cutmap_ai_product_dev.jpg` | JPG | Local | Events, Details, Gallery | AI in Product Engineering Technical Workshop |
+| `cutmap_ai_business_analytics.jpg` | `/cutmap_events/cutmap_ai_business_analytics.jpg` | JPG | Local | Events, Details, Gallery | Executive Data Science & Business Analytics Seminar |
+| `cutmap_manufacturing_workforce.jpg` | `/cutmap_events/cutmap_manufacturing_workforce.jpg` | JPG | Local | Events, Details, Gallery | Industry 4.0 Advanced Manufacturing Colloquium |
+| `cutmap_ev_vehicles_tech.jpg` | `/cutmap_events/cutmap_ev_vehicles_tech.jpg` | JPG | Local | Events, Details, Gallery | Electric Vehicle Powertrain & Battery Lab Demo |
+| `cutmap_forensic_science.jpg` | `/cutmap_events/cutmap_forensic_science.jpg` | JPG | Local | Events, Details, Gallery | Crime Scene Investigation & Forensic Workshop |
+| `cutmap_optometry_day.jpg` | `/cutmap_events/cutmap_optometry_day.jpg` | JPG | Local | Events, Details, Gallery | World Optometry Day Vision Screening Drive |
+| `cutmap_blood_donation.jpg` | `/cutmap_events/cutmap_blood_donation.jpg` | JPG | Local | Events, Details, Gallery | Red Cross & NSS Mega Blood Donation Camp |
+| `cutmap_vidya_daan.jpg` | `/cutmap_events/cutmap_vidya_daan.jpg` | JPG | Local | Events, Details, Gallery | Vidya Daan Rural School Education Outreach |
+| `cutmap_dandi_march.jpg` | `/cutmap_events/cutmap_dandi_march.jpg` | JPG | Local | Events, Details, Gallery | Dandi March Memorial Heritage Walk & Exhibition |
+| `cutmap_fpo_mou.jpg` | `/cutmap_events/cutmap_fpo_mou.jpg` | JPG | Local | Events, Details, Gallery | Agritech FPO Strategic Academic Partnership |
+| `cutmap_placement_students_2026.jpg` | `/cutmap_events/cutmap_placement_students_2026.jpg` | JPG | Local | Home, Gallery, Placement | CUTM AP Placed Students 2026 Celebration Banner |
+| `cutmap_placement_2026_1.jpg` – `16.jpg` | `/cutmap_events/cutmap_placement_2026_[1-16].jpg` | JPG | Local | Gallery, Placement Filter | Individual Placed Students 2026 portraits & roles |
+
+---
+
+### 🛠️ Developer Guidelines for Images & Banners
+
+When adding new event photographs, banners, or institutional logos, adhere to the following rules:
+
+1. **Storage Location**:
+   - Place all public images in `frontend-react/public/cutmap_events/` (for event photos) or `frontend-react/public/` (for logos and global icons).
+   - Vite copies everything in `public/` directly to the production root (`dist/`) without hashing filenames.
+
+2. **Case Sensitivity (Critical for Vercel & Linux Deployments)**:
+   - Linux and Vercel container environments enforce strict case-sensitive paths.
+   - Always name files in **lowercase snake_case** with lowercase extensions (e.g., `cutmap_event_name.jpg`, never `Cutmap_Event_Name.JPG`).
+   - Match the code reference exactly with the filesystem.
+
+3. **Absolute Root Referencing in React**:
+   - In React components, always reference public assets with a leading forward slash:
+     ```jsx
+     // CORRECT: Resolves identically on '/', '/events', '/events/3', '/student/dashboard'
+     <img src="/cutmap_events/cutmap_vyomang_day1.jpg" alt="Vyomang Day 1" />
+
+     // INCORRECT: Relative paths break on nested routes like '/events/3'
+     <img src="cutmap_events/cutmap_vyomang_day1.jpg" />
+     ```
+
+4. **Resilient `onError` Fallback Handlers**:
+   - Always provide an `onError` fallback on event image elements to gracefully recover if an image fails to load or is temporarily inaccessible:
+     ```jsx
+     <img
+       src={event.imageUrl}
+       alt={event.title}
+       onError={(e) => {
+         e.currentTarget.onerror = null;
+         e.currentTarget.src = '/cutmap_events/cutmap_semicon_arena.jpg';
+       }}
+     />
+     ```
+
+5. **Recommended Aspect Ratios and Resolutions**:
+   - **Event Hero Banners:** `1200 x 630 px` (Aspect Ratio 16:9 or 1.91:1) optimized as Progressive JPEG or WebP ($\le 350\text{ KB}$).
+   - **Gallery Masonry Tiles:** `800 x 600 px` or `800 x 1000 px` ($\le 250\text{ KB}$).
+   - **Logos & Badges:** Vector SVG or transparent PNG ($\le 50\text{ KB}$).
+
+---
+
+## 19. Future Enhancements
 - **Push & SMS Alerts:** Integration with SMS gateways and WhatsApp Business API for instant registration and waitlist status alerts.
 - **Mobile Application:** Dedicated native Android and iOS mobile apps built with React Native.
 - **Payment Gateway Integration:** Support for paid national workshops and cultural ticket sales via Razorpay / Stripe.
@@ -463,7 +569,7 @@ Dedicated gallery section showcasing the placed students of 2026.
 
 ---
 
-## 19. Advantages of the Project
+## 20. Advantages of the Project
 - **Elimination of Paper Waste:** Replaces manual registration sheets and printed event passes.
 - **Audit-Ready Operations:** Every registration, approval, and attendance record is logged in MySQL.
 - **Fraud-Proof Certification:** Verifiable certificate codes protect against forged credentials.
@@ -472,12 +578,12 @@ Dedicated gallery section showcasing the placed students of 2026.
 
 ---
 
-## 20. Conclusion
+## 21. Conclusion
 The **College Event Management System (CEMS)** is a robust solution for modern campus management. By combining enterprise Java with modern React engineering, CEMS simplifies campus activity coordination, eliminates administrative bottlenecks, and delivers a transparent experience for students and staff. The project is fully documented, tested, and ready for institutional deployment and academic review.
 
 ---
 
-## 21. Credits and References
+## 22. Credits and References
 - **Institution:** [Centurion University of Technology and Management (CUTM AP)](https://cutmap.ac.in/)
 - **Events Calendar:** [CUTM AP Events](https://cutmap.ac.in/events-calendar/)
 - **Official Image Gallery:** [CUTM AP Image Gallery](https://cutmap.ac.in/image-gallery/)

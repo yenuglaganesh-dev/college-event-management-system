@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastContainer } from './components/Toast';
+import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -49,6 +50,7 @@ import OrganizerAnnouncements from './pages/organizer/OrganizerAnnouncements';
 export default function App() {
     return (
         <AuthProvider>
+            <ScrollToTop />
             <div className="app-shell" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
                 <ParticleBackground />
                 <ToastContainer />

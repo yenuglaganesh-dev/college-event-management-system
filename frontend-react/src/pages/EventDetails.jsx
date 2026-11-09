@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { Api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -16,10 +16,22 @@ export default function EventDetails() {
     const { isAuthenticated, isStudent } = useAuth();
     const navigate = useNavigate();
 
+    // Scroll to top immediately on ID change before paint
+    useLayoutEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+    }, [id]);
+
     useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+
         Api.events.getById(id).then((res) => {
             if (res.data) setEvent(res.data);
             setLoading(false);
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         }).catch((err) => {
             showToast('Event not found: ' + err.message, 'error');
             setLoading(false);
