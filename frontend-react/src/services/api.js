@@ -1,32 +1,82 @@
 // Centralized API Service for College Event Management System
 const BASE_URL = '/api';
 
+// Safe storage wrapper with in-memory fallback for restricted/iframe environments
+const memoryStore = {};
+
+export const safeStorage = {
+    getItem(key) {
+        try {
+            if (typeof window !== 'undefined' && 'localStorage' in window) {
+                return window.localStorage.getItem(key);
+            }
+        } catch (e) {
+            // Storage access blocked or restricted by browser
+        }
+        return memoryStore[key] || null;
+    },
+    setItem(key, value) {
+        try {
+            if (typeof window !== 'undefined' && 'localStorage' in window) {
+                window.localStorage.setItem(key, value);
+                return;
+            }
+        } catch (e) {
+            // Storage access blocked or restricted by browser
+        }
+        memoryStore[key] = String(value);
+    },
+    removeItem(key) {
+        try {
+            if (typeof window !== 'undefined' && 'localStorage' in window) {
+                window.localStorage.removeItem(key);
+                return;
+            }
+        } catch (e) {
+            // Storage access blocked or restricted by browser
+        }
+        delete memoryStore[key];
+    },
+    clear() {
+        try {
+            if (typeof window !== 'undefined' && 'localStorage' in window) {
+                window.localStorage.clear();
+                return;
+            }
+        } catch (e) {
+            // Storage access blocked or restricted by browser
+        }
+        Object.keys(memoryStore).forEach(k => delete memoryStore[k]);
+    }
+};
+
 export const Api = {
     getToken() {
-        return localStorage.getItem('cems_jwt_token');
+        return safeStorage.getItem('cems_jwt_token');
     },
 
     setToken(token) {
-        if (token) localStorage.setItem('cems_jwt_token', token);
-        else localStorage.removeItem('cems_jwt_token');
+        if (token) safeStorage.setItem('cems_jwt_token', token);
+        else safeStorage.removeItem('cems_jwt_token');
     },
 
     getUser() {
         try {
-            return JSON.parse(localStorage.getItem('cems_user') || 'null');
+            const raw = safeStorage.getItem('cems_user');
+            return raw ? JSON.parse(raw) : null;
         } catch {
             return null;
         }
     },
 
     setUser(user) {
-        if (user) localStorage.setItem('cems_user', JSON.stringify(user));
-        else localStorage.removeItem('cems_user');
+        if (user) safeStorage.setItem('cems_user', JSON.stringify(user));
+        else safeStorage.removeItem('cems_user');
     },
 
     clearAuth() {
-        localStorage.removeItem('cems_jwt_token');
-        localStorage.removeItem('cems_user');
+        safeStorage.removeItem('cems_jwt_token');
+        safeStorage.removeItem('cems_user');
     },
 
     async request(endpoint, options = {}) {

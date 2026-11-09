@@ -55,9 +55,9 @@ export default function StudentProfile() {
             const res = await api.students.updateProfile(profile);
             toast.success('Profile updated successfully');
             if (user && res.data) {
-                const storedUser = JSON.parse(localStorage.getItem('cems_user') || '{}');
+                const storedUser = api.getUser() || {};
                 storedUser.fullName = res.data.fullName;
-                localStorage.setItem('cems_user', JSON.stringify(storedUser));
+                api.setUser(storedUser);
             }
         } catch (err) {
             toast.error(err.message || 'Failed to update profile');

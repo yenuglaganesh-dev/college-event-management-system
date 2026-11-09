@@ -7,43 +7,73 @@ const API_BASE_URL = window.location.origin.includes('8080')
   ? '/api' 
   : 'http://localhost:8080/api';
 
+const _memoryStore = {};
+const safeStorage = {
+  getItem(key) {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        return window.localStorage.getItem(key);
+      }
+    } catch (e) {}
+    return _memoryStore[key] || null;
+  },
+  setItem(key, value) {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        window.localStorage.setItem(key, value);
+        return;
+      }
+    } catch (e) {}
+    _memoryStore[key] = String(value);
+  },
+  removeItem(key) {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        window.localStorage.removeItem(key);
+        return;
+      }
+    } catch (e) {}
+    delete _memoryStore[key];
+  }
+};
+
 const Api = {
   getToken() {
-    return localStorage.getItem('cems_jwt_token');
+    return safeStorage.getItem('cems_jwt_token');
   },
 
   setAuth(data) {
-    localStorage.setItem('cems_jwt_token', data.token);
-    localStorage.setItem('cems_user_role', data.role);
-    localStorage.setItem('cems_user_id', data.id);
-    localStorage.setItem('cems_username', data.username);
-    localStorage.setItem('cems_full_name', data.fullName);
-    localStorage.setItem('cems_email', data.email);
+    safeStorage.setItem('cems_jwt_token', data.token);
+    safeStorage.setItem('cems_user_role', data.role);
+    safeStorage.setItem('cems_user_id', data.id);
+    safeStorage.setItem('cems_username', data.username);
+    safeStorage.setItem('cems_full_name', data.fullName);
+    safeStorage.setItem('cems_email', data.email);
     if (data.studentId) {
-      localStorage.setItem('cems_student_id', data.studentId);
+      safeStorage.setItem('cems_student_id', data.studentId);
     }
   },
 
   clearAuth() {
-    localStorage.removeItem('cems_jwt_token');
-    localStorage.removeItem('cems_user_role');
-    localStorage.removeItem('cems_user_id');
-    localStorage.removeItem('cems_username');
-    localStorage.removeItem('cems_full_name');
-    localStorage.removeItem('cems_email');
-    localStorage.removeItem('cems_student_id');
+    safeStorage.removeItem('cems_jwt_token');
+    safeStorage.removeItem('cems_user_role');
+    safeStorage.removeItem('cems_user_id');
+    safeStorage.removeItem('cems_username');
+    safeStorage.removeItem('cems_full_name');
+    safeStorage.removeItem('cems_email');
+    safeStorage.removeItem('cems_student_id');
   },
 
   getUser() {
     const token = this.getToken();
     if (!token) return null;
     return {
-      role: localStorage.getItem('cems_user_role'),
-      id: localStorage.getItem('cems_user_id'),
-      username: localStorage.getItem('cems_username'),
-      fullName: localStorage.getItem('cems_full_name'),
-      email: localStorage.getItem('cems_email'),
-      studentId: localStorage.getItem('cems_student_id')
+      role: safeStorage.getItem('cems_user_role'),
+      id: safeStorage.getItem('cems_user_id'),
+      username: safeStorage.getItem('cems_username'),
+      fullName: safeStorage.getItem('cems_full_name'),
+      email: safeStorage.getItem('cems_email'),
+      studentId: safeStorage.getItem('cems_student_id')
     };
   },
 
