@@ -9,3 +9,4 @@ backend/target
 frontend-react/node_modules
 tools
 *.log
+

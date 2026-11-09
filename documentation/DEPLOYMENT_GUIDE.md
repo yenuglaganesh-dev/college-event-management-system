@@ -106,3 +106,4 @@ docker run -d -p 8080:8080 \
   college-event-management
 ```
 Your full application will be accessible at `http://localhost:8080`.
+

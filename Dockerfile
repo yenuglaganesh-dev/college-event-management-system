@@ -1,35 +1,41 @@
-# Multi-stage Dockerfile for College Event Management System
-# Builds React Frontend and Spring Boot Backend into a unified container
+# Multi-stage Dockerfile for College Event Management System (Render & Cloud Ready)
 
 # Stage 1: Build React Frontend
-FROM node:20-alpine AS frontend-builder
+FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend-react
 COPY frontend-react/package*.json ./
 RUN npm install
 COPY frontend-react/ ./
 RUN npm run build
 
-# Stage 2: Build Spring Boot Application with Maven
-FROM maven:3.9.9-eclipse-temurin-21-alpine AS backend-builder
+# Stage 2: Build Spring Boot Backend
+FROM maven:3.9.9-eclipse-temurin-21 AS backend-builder
 WORKDIR /app
+
+ENV MAVEN_OPTS="-Xmx384m -XX:+UseSerialGC -Dmaven.wagon.http.retryHandler.count=3"
+
+# Copy Maven POM and backend source code
 COPY backend/pom.xml backend/pom.xml
-# Copy static frontend assets into backend
-COPY --from=frontend-builder /app/frontend-react/dist backend/src/main/resources/static
 COPY backend/src backend/src
-WORKDIR /app/backend
-RUN mvn clean package -DskipTests
 
-# Stage 3: Lightweight Production JRE Image
-FROM eclipse-temurin:21-jre-alpine
+# Overlay compiled React frontend directly onto Spring Boot static resources
+COPY --from=frontend-builder /app/frontend-react/dist/ backend/src/main/resources/static/
+
+WORKDIR /app/backend
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true --no-transfer-progress
+
+# Stage 3: Lightweight Production JRE Runtime
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Non-root user for security
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
+# Ensure /tmp is fully accessible for embedded Tomcat
+RUN chmod 1777 /tmp
 
-COPY --from=backend-builder --chown=appuser:appgroup /app/backend/target/*.jar app.jar
+# Copy the packaged Spring Boot executable JAR
+COPY --from=backend-builder /app/backend/target/*.jar app.jar
 
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=10000
+EXPOSE 10000
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+# Run Spring Boot with tuned memory settings for Render free tier (512MB RAM)
+ENTRYPOINT ["java", "-Xmx384m", "-XX:+UseSerialGC", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
