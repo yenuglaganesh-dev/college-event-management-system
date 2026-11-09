@@ -97,12 +97,12 @@ export default function Home() {
             <div className="decorative-orb decorative-orb-2" />
 
             {/* Hero Section */}
-            <section style={{ position: 'relative', minHeight: '82vh', display: 'flex', alignItems: 'center', padding: '4rem 1.5rem 3rem 1.5rem' }}>
-                <div className="section-container" style={{ textAlign: 'center', width: '100%' }}>
+            <section style={{ position: 'relative', minHeight: '82vh', display: 'flex', alignItems: 'center', padding: '3.5rem 1rem 2.5rem 1rem' }}>
+                <div className="section-container" style={{ textAlign: 'center', width: '100%', maxWidth: '100%' }}>
                     {/* Badge */}
                     <div className="animate-fade-up">
-                        <span className="role-badge" style={{ marginBottom: '1.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 1rem', fontSize: '0.8rem' }}>
-                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary-orange)', display: 'inline-block' }}></span>
+                        <span className="role-badge" style={{ marginBottom: '1.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', fontSize: 'clamp(0.7rem, 2.5vw, 0.8rem)', maxWidth: '96%', whiteSpace: 'normal', textAlign: 'center' }}>
+                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary-orange)', display: 'inline-block', flexShrink: 0 }}></span>
                             Official University Event Hub &bull; 2026 Academic Season
                         </span>
                     </div>

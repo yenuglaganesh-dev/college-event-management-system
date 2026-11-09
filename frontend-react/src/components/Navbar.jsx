@@ -21,15 +21,15 @@ export default function Navbar() {
     return (
         <header className="nav-sticky-wrapper">
             <nav className="nav-container-bar">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                <div className="nav-brand-container" style={{ display: 'flex', alignItems: 'center' }}>
                     <NavLink to="/" className="nav-brand" onClick={closeMobile}>
                         <img
                             src={centurionLogo}
                             alt="Centurion University Logo"
                             className="nav-university-logo"
                         />
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                            <span>College<span className="nav-brand-orange">Events</span></span>
+                        <div className="nav-brand-text-wrap">
+                            <span className="nav-brand-title">College<span className="nav-brand-orange">Events</span></span>
                             {isAdmin && (
                                 <span className="role-badge" style={{ background: '#FEF2F2', color: '#DC2626', borderColor: '#FECACA' }}>Admin</span>
                             )}
@@ -37,7 +37,7 @@ export default function Navbar() {
                                 <span className="role-badge" style={{ background: 'var(--light-orange)', color: 'var(--primary-orange)' }}>Organizer</span>
                             )}
                             {!isAdmin && !isOrganizer && (
-                                <span className="role-badge">Campus</span>
+                                <span className="role-badge nav-role-badge">Campus</span>
                             )}
                         </div>
                     </NavLink>
@@ -124,17 +124,6 @@ export default function Navbar() {
                         type="button"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-label="Toggle Navigation"
-                        style={{
-                            display: 'none',
-                            background: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            padding: '0.5rem',
-                            borderRadius: 'var(--radius-pill)',
-                            color: 'var(--heading-color)',
-                            minWidth: '40px',
-                            minHeight: '40px'
-                        }}
                         className="mobile-hamburger-btn"
                     >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

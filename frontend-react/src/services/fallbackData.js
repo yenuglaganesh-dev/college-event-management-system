@@ -305,3 +305,4 @@ export const FALLBACK_ANNOUNCEMENTS = [
         validUntil: "2026-06-15"
     }
 ];
+
