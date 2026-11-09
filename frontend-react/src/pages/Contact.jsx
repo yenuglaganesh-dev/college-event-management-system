@@ -35,9 +35,9 @@ export default function Contact() {
                 </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: '2rem' }}>
+            <div className="contact-grid">
                 {/* Details Card */}
-                <div className="white-card" style={{ padding: '2.25rem' }}>
+                <div className="white-card responsive-card-padding">
                     <h3 style={{ fontSize: '1.35rem', color: 'var(--heading-color)', marginBottom: '1.5rem', fontWeight: 800 }}>Office Contacts</h3>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

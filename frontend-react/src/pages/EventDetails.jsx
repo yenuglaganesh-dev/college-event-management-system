@@ -118,7 +118,7 @@ export default function EventDetails() {
                 &larr; Back to Events Directory
             </NavLink>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem' }}>
+            <div className="event-details-grid">
                 {/* Left Column: Media & Description */}
                 <div>
                     <div style={{
@@ -126,12 +126,17 @@ export default function EventDetails() {
                         overflow: 'hidden',
                         marginBottom: '1.75rem',
                         border: '1px solid var(--border-color)',
-                        boxShadow: 'var(--shadow-sm)'
+                        boxShadow: 'var(--shadow-sm)',
+                        background: 'var(--light-orange)'
                     }}>
                         <img
                             src={event.imageUrl}
                             alt={event.title}
-                            style={{ width: '100%', height: '380px', objectFit: 'cover' }}
+                            className="event-details-hero-img"
+                            onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = '/cutmap_events/cutmap_semicon_arena.jpg';
+                            }}
                         />
                     </div>
 

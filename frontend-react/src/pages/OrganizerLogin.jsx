@@ -30,7 +30,7 @@ export default function OrganizerLogin() {
             <div className="decorative-orb decorative-orb-1" />
             <div className="decorative-orb decorative-orb-2" />
 
-            <div className="white-card" style={{ position: 'relative', zIndex: 1, maxWidth: '440px', width: '100%', padding: '2.5rem' }}>
+            <div className="white-card auth-card">
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <span className="role-badge" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>
                         Faculty Operations

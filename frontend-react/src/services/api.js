@@ -1,5 +1,12 @@
 // Centralized API Service for College Event Management System
-const BASE_URL = '/api';
+import {
+    FALLBACK_EVENTS,
+    FALLBACK_GALLERY,
+    FALLBACK_STATS,
+    FALLBACK_ANNOUNCEMENTS
+} from './fallbackData';
+
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Safe storage wrapper with in-memory fallback for restricted/iframe environments
 const memoryStore = {};
@@ -119,12 +126,42 @@ export const Api = {
     },
 
     events: {
-        getAll: () => Api.request('/events'),
-        getActive: () => Api.request('/events/active'),
-        getById: (id) => Api.request(`/events/${id}`),
+        getAll: async () => {
+            try {
+                const res = await Api.request('/events');
+                if (res?.data && res.data.length > 0) return res;
+            } catch (e) {
+                console.warn('Using fallback events data:', e.message);
+            }
+            return { success: true, data: FALLBACK_EVENTS };
+        },
+        getActive: async () => {
+            try {
+                const res = await Api.request('/events/active');
+                if (res?.data && res.data.length > 0) return res;
+            } catch (e) {
+                console.warn('Using fallback active events:', e.message);
+            }
+            return { success: true, data: FALLBACK_EVENTS.filter(e => e.status === 'ACTIVE') };
+        },
+        getById: async (id) => {
+            try {
+                return await Api.request(`/events/${id}`);
+            } catch (e) {
+                const match = FALLBACK_EVENTS.find(e => String(e.id) === String(id)) || FALLBACK_EVENTS[0];
+                return { success: true, data: match };
+            }
+        },
         search: (params) => {
             const query = new URLSearchParams(params).toString();
-            return Api.request(`/events/search?${query}`);
+            return Api.request(`/events/search?${query}`).catch(() => ({
+                success: true,
+                data: FALLBACK_EVENTS.filter(e => {
+                    if (params?.category && params.category !== 'ALL' && e.category !== params.category) return false;
+                    if (params?.keyword && !e.title.toLowerCase().includes(params.keyword.toLowerCase())) return false;
+                    return true;
+                })
+            }));
         },
         create: (data) => Api.request('/events', { method: 'POST', body: JSON.stringify(data) }),
         update: (id, data) => Api.request(`/events/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -156,23 +193,47 @@ export const Api = {
     },
 
     gallery: {
-        getPhotos: (params) => {
-            if (typeof params === 'string') {
-                return Api.request(params ? `/gallery?category=${encodeURIComponent(params)}` : '/gallery');
+        getPhotos: async (params) => {
+            try {
+                let qs = '';
+                if (typeof params === 'string') {
+                    qs = params ? `?category=${encodeURIComponent(params)}` : '';
+                } else if (params) {
+                    const query = new URLSearchParams();
+                    if (params.category) query.append('category', params.category);
+                    if (params.eventId) query.append('eventId', params.eventId);
+                    const qStr = query.toString();
+                    if (qStr) qs = `?${qStr}`;
+                }
+                const res = await Api.request(`/gallery${qs}`);
+                if (res?.data && res.data.length > 0) return res;
+            } catch (e) {
+                console.warn('Using fallback gallery data:', e.message);
             }
-            const query = new URLSearchParams();
-            if (params?.category) query.append('category', params.category);
-            if (params?.eventId) query.append('eventId', params.eventId);
-            const qs = query.toString();
-            return Api.request(qs ? `/gallery?${qs}` : '/gallery');
+            let list = [...FALLBACK_GALLERY];
+            const cat = typeof params === 'string' ? params : params?.category;
+            const eventId = typeof params === 'object' ? params?.eventId : null;
+            if (cat && cat !== 'All') {
+                list = list.filter(p => p.category === cat);
+            }
+            if (eventId) {
+                list = list.filter(p => String(p.eventId) === String(eventId));
+            }
+            return { success: true, data: list };
         },
-        getByEventId: (eventId) => Api.request(`/gallery?eventId=${eventId}`),
+        getByEventId: (eventId) => Api.gallery.getPhotos({ eventId }),
         addPhoto: (data) => Api.request('/gallery', { method: 'POST', body: JSON.stringify(data) }),
         deletePhoto: (id) => Api.request(`/gallery/${id}`, { method: 'DELETE' })
     },
 
     announcements: {
-        getActive: () => Api.request('/announcements/active'),
+        getActive: async () => {
+            try {
+                const res = await Api.request('/announcements/active');
+                if (res?.data && res.data.length > 0) return res;
+            } catch (e) {}
+            return { success: true, data: FALLBACK_ANNOUNCEMENTS };
+        },
         create: (data) => Api.request('/announcements', { method: 'POST', body: JSON.stringify(data) }),
         delete: (id) => Api.request(`/announcements/${id}`, { method: 'DELETE' })
     },
@@ -188,9 +249,9 @@ export const Api = {
     },
 
     dashboard: {
-        getAdminStats: () => Api.request('/dashboard/admin'),
+        getAdminStats: () => Api.request('/dashboard/admin').catch(() => ({ success: true, data: FALLBACK_STATS })),
         getOrganizerDashboard: () => Api.request('/organizer/dashboard'),
-        getPublicStats: () => Api.request('/dashboard/public')
+        getPublicStats: () => Api.request('/dashboard/public').catch(() => ({ success: true, data: FALLBACK_STATS }))
     },
 
     students: {

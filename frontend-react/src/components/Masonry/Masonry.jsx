@@ -423,6 +423,10 @@ export default function Masonry({
                                                         key={ep.id}
                                                         src={ep.imageUrl}
                                                         alt={ep.title}
+                                                        onError={(e) => {
+                                                            e.currentTarget.onerror = null;
+                                                            e.currentTarget.src = '/centurion-logo.png';
+                                                        }}
                                                         onClick={() => {
                                                             if (matchIdx !== -1) setLightboxIndex(matchIdx);
                                                         }}

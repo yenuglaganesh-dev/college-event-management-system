@@ -205,24 +205,24 @@ export default function Home() {
 
                 <ScrollStack itemDistance={30} itemScale={0.03} stackPosition={100}>
                     {events.slice(0, 3).map((event) => (
-                        <div key={event.id} className="scroll-stack-card" style={{ padding: '2.25rem' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', alignItems: 'center' }}>
+                        <div key={event.id} className="scroll-stack-card scroll-stack-padding">
+                            <div className="scroll-stack-grid">
                                 <div>
                                     <span className="event-category-pill" style={{ position: 'static', marginBottom: '0.75rem' }}>
                                         {event.category}
                                     </span>
-                                    <h3 style={{ fontSize: '1.85rem', color: 'var(--heading-color)', marginBottom: '0.5rem', fontWeight: 800 }}>
+                                    <h3 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.85rem)', color: 'var(--heading-color)', marginBottom: '0.5rem', fontWeight: 800 }}>
                                         {event.title}
                                     </h3>
-                                    <p style={{ color: 'var(--body-text)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                                    <p style={{ color: 'var(--body-text)', lineHeight: 1.6, marginBottom: '1.25rem', fontSize: '0.95rem' }}>
                                         {event.description}
                                     </p>
-                                    <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: 'var(--primary-orange)', fontWeight: 600, marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: 'var(--primary-orange)', fontWeight: 600, marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                                         <span>Venue: {event.venue}</span>
                                         <span>Date: {event.eventDate}</span>
                                         <span>Time: {event.eventTime}</span>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                                         <NavLink to={`/events/${event.id}`} className="btn btn-primary btn-pill">
                                             View Details &rarr;
                                         </NavLink>
@@ -235,7 +235,11 @@ export default function Home() {
                                     <img
                                         src={event.imageUrl}
                                         alt={event.title}
-                                        style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-color)' }}
+                                        className="scroll-stack-img"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = '/cutmap_events/cutmap_semicon_arena.jpg';
+                                        }}
                                     />
                                 </div>
                             </div>

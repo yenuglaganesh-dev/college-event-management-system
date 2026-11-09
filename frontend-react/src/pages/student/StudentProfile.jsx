@@ -83,9 +83,9 @@ export default function StudentProfile() {
                         <p style={{ color: 'var(--body-text)', marginTop: '1rem' }}>Loading profile...</p>
                     </div>
                 ) : (
-                    <div className="white-card" style={{ padding: '2.5rem' }}>
+                    <div className="white-card responsive-card-padding">
                         <form onSubmit={handleSubmit}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                            <div className="form-grid-2col" style={{ marginBottom: '1.5rem' }}>
                                 <div>
                                     <label className="form-label">Roll Number</label>
                                     <input 
@@ -110,7 +110,7 @@ export default function StudentProfile() {
                                 </div>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                            <div className="form-grid-2col" style={{ marginBottom: '1.5rem' }}>
                                 <div>
                                     <label className="form-label">Email Address *</label>
                                     <input 
@@ -135,7 +135,7 @@ export default function StudentProfile() {
                                 </div>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                            <div className="form-grid-2col" style={{ marginBottom: '1.5rem' }}>
                                 <div>
                                     <label className="form-label">Department *</label>
                                     <select 

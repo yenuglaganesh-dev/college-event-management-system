@@ -41,7 +41,7 @@ export default function Register() {
             <div className="decorative-orb decorative-orb-1" />
             <div className="decorative-orb decorative-orb-2" />
 
-            <div className="white-card" style={{ position: 'relative', zIndex: 1, maxWidth: '560px', width: '100%', padding: '2.5rem' }}>
+            <div className="white-card responsive-card-padding" style={{ position: 'relative', zIndex: 1, maxWidth: '560px', width: '100%' }}>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <span className="role-badge" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>
                         Student Onboarding
@@ -55,7 +55,7 @@ export default function Register() {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="form-grid-2col">
                         <div className="form-group">
                             <label className="form-label">Student ID *</label>
                             <input
@@ -83,7 +83,7 @@ export default function Register() {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+                    <div className="form-grid-2col">
                         <div className="form-group">
                             <label className="form-label">College Email Address *</label>
                             <input
@@ -111,7 +111,7 @@ export default function Register() {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '1rem' }}>
+                    <div className="form-grid-2col">
                         <div className="form-group">
                             <label className="form-label">Department *</label>
                             <select

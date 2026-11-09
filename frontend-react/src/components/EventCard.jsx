@@ -16,6 +16,10 @@ export default function EventCard({ event, onRegister, isRegistered = false, sho
                     alt={event.title}
                     loading="lazy"
                     className="event-card-img"
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = defaultImage;
+                    }}
                 />
                 <span className="event-category-pill">{event.category}</span>
                 <span className={`event-status-pill ${event.status === 'ACTIVE' ? 'active' : event.status === 'COMPLETED' ? 'completed' : 'closed'}`}>

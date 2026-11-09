@@ -23,7 +23,7 @@ export default function About() {
                 </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
+            <div className="about-grid">
                 <div className="white-card" style={{ padding: '1.75rem' }}>
                     <div style={{ color: 'var(--primary-orange)', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Backend Architecture</div>
                     <h3 style={{ color: 'var(--heading-color)', fontSize: '1.15rem', marginBottom: '0.5rem' }}>Java 21 Spring Boot</h3>

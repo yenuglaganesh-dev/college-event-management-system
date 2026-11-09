@@ -237,8 +237,8 @@ export default function AdminEvents() {
                 {modalOpen && (
                     <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
                         <div 
-                            className="white-card" 
-                            style={{ maxWidth: '680px', width: '92%', padding: '2.5rem', maxHeight: '90vh', overflowY: 'auto', boxShadow: 'var(--shadow-lg)' }}
+                            className="white-card responsive-modal-card" 
+                            style={{ maxWidth: '680px', width: '92%', maxHeight: '90vh', overflowY: 'auto', boxShadow: 'var(--shadow-lg)' }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 0, marginBottom: '1.5rem', color: 'var(--heading-color)' }}>
@@ -259,7 +259,7 @@ export default function AdminEvents() {
                                     />
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                                <div className="form-grid-2col" style={{ marginBottom: '1.25rem' }}>
                                     <div>
                                         <label className="form-label">Category *</label>
                                         <select name="category" className="form-select" value={form.category} onChange={handleChange} required>
@@ -297,7 +297,7 @@ export default function AdminEvents() {
                                     />
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                                <div className="form-grid-2col" style={{ marginBottom: '1.25rem' }}>
                                     <div>
                                         <label className="form-label">Venue Location *</label>
                                         <input
@@ -322,7 +322,7 @@ export default function AdminEvents() {
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                                <div className="form-grid-2col" style={{ marginBottom: '1.25rem' }}>
                                     <div>
                                         <label className="form-label">Event Time *</label>
                                         <input
@@ -348,7 +348,7 @@ export default function AdminEvents() {
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                                <div className="form-grid-2col" style={{ marginBottom: '1.5rem' }}>
                                     <div>
                                         <label className="form-label">Max Seating Capacity *</label>
                                         <input

@@ -140,8 +140,8 @@ export default function AdminOrganizers() {
                 {modalOpen && (
                     <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
                         <div 
-                            className="white-card" 
-                            style={{ maxWidth: '560px', width: '92%', padding: '2.5rem', boxShadow: 'var(--shadow-lg)' }}
+                            className="white-card responsive-modal-card" 
+                            style={{ maxWidth: '560px', boxShadow: 'var(--shadow-lg)' }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 0, marginBottom: '1.5rem', color: 'var(--heading-color)' }}>
@@ -160,7 +160,7 @@ export default function AdminOrganizers() {
                                         required
                                     />
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                                <div className="form-grid-2col" style={{ marginBottom: '1.25rem' }}>
                                     <div>
                                         <label className="form-label">Login Username *</label>
                                         <input
@@ -185,7 +185,7 @@ export default function AdminOrganizers() {
                                         />
                                     </div>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                                <div className="form-grid-2col" style={{ marginBottom: '1.25rem' }}>
                                     <div>
                                         <label className="form-label">Email Address *</label>
                                         <input

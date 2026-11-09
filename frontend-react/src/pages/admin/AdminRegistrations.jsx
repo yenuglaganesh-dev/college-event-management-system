@@ -344,8 +344,8 @@ export default function AdminRegistrations() {
                 {actionModal && (
                     <div className="modal-backdrop" onClick={() => setActionModal(null)}>
                         <div 
-                            className="white-card" 
-                            style={{ maxWidth: '520px', width: '92%', padding: '2.25rem', position: 'relative', boxShadow: 'var(--shadow-lg)' }}
+                            className="white-card responsive-modal-card" 
+                            style={{ maxWidth: '520px', position: 'relative', boxShadow: 'var(--shadow-lg)' }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 0, marginBottom: '0.75rem', color: 'var(--heading-color)' }}>
@@ -397,8 +397,8 @@ export default function AdminRegistrations() {
                 {detailModalReg && (
                     <div className="modal-backdrop" onClick={() => setDetailModalReg(null)}>
                         <div 
-                            className="white-card" 
-                            style={{ maxWidth: '640px', width: '92%', padding: '2.5rem', position: 'relative', boxShadow: 'var(--shadow-lg)' }}
+                            className="white-card responsive-modal-card" 
+                            style={{ maxWidth: '640px', position: 'relative', boxShadow: 'var(--shadow-lg)' }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button 
@@ -414,7 +414,7 @@ export default function AdminRegistrations() {
                                 Registration #{detailModalReg.registrationCode}
                             </h3>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'var(--light-orange-subtle)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1.5rem' }}>
+                            <div className="form-grid-2col" style={{ gap: '1rem', background: 'var(--light-orange-subtle)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1.5rem' }}>
                                 <div>
                                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Student Name</div>
                                     <div style={{ fontWeight: 700, color: 'var(--heading-color)' }}>{detailModalReg.studentName}</div>
