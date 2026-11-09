@@ -18,13 +18,13 @@ public class DataSourceConfig {
 
     private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
 
-    @Value("${SPRING_DATASOURCE_URL:${spring.datasource.url:}}")
+    @Value("${SPRING_DATASOURCE_URL:${MYSQL_URL:${spring.datasource.url:}}}")
     private String configuredUrl;
 
-    @Value("${SPRING_DATASOURCE_USERNAME:${spring.datasource.username:}}")
+    @Value("${SPRING_DATASOURCE_USERNAME:${MYSQLUSER:${spring.datasource.username:}}}")
     private String configuredUsername;
 
-    @Value("${SPRING_DATASOURCE_PASSWORD:${spring.datasource.password:}}")
+    @Value("${SPRING_DATASOURCE_PASSWORD:${MYSQLPASSWORD:${spring.datasource.password:}}}")
     private String configuredPassword;
 
     @Bean
